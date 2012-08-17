@@ -1,9 +1,9 @@
 public class CardGameCard implements Comparable<CardGameCard>, Cloneable {
-	protected byte suit;
-	protected byte value;
+	protected int suit;
+	protected int value;
 	protected int owner;
 	CardGameCard(){suit=-128;value=-128;}
-	CardGameCard(byte suit, byte value){
+	CardGameCard(int suit, int value){
 		this.suit = suit;
 		this.value = value;
 		owner = 0;
@@ -36,8 +36,8 @@ public class CardGameCard implements Comparable<CardGameCard>, Cloneable {
 	
 	public int getOwner(){return owner;}
 
-	public byte getSuit(){return suit;}
+	public int getSuit(){return suit;}
 	
-	public byte getValue(){return value;}
+	public int getValue(){return value;}
 	
 }

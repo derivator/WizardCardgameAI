@@ -1,7 +1,7 @@
 
 public class WizardCard extends CardGameCard {
 	static String suits = "GYRB";
-	WizardCard(byte suit, byte value){
+	WizardCard(int suit, int value){
 		super(suit, value);
 	}
 	

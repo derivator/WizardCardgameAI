@@ -2,14 +2,14 @@ import java.util.Comparator;
 
 
 public class WizardComparator implements Comparator<CardGameCard> {
-	private final byte trumpsuit;
-	private final byte followsuit;
-	WizardComparator(byte trumpsuit, byte followsuit){
+	private final int trumpsuit;
+	private final int followsuit;
+	WizardComparator(int trumpsuit, int followsuit){
 		this.trumpsuit = trumpsuit;
 		this.followsuit = followsuit;
 	}
-	WizardComparator(byte trumpsuit){
-		this(trumpsuit,(byte) -127);
+	WizardComparator(int trumpsuit){
+		this(trumpsuit,(int) -127);
 	}
 	@Override
 	public int compare(CardGameCard arg0, CardGameCard arg1) {

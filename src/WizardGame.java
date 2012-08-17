@@ -86,9 +86,9 @@ public class WizardGame extends CardGame implements WizardState {
 	
 	protected void setupDeck(){
 		deck = new ArrayList<CardGameCard>();
-		for(byte s=0;s<4;s++)
+		for(int s=0;s<4;s++)
 		{
-			for(byte v=0;v<15;v++)
+			for(int v=0;v<15;v++)
 			{
 				deck.add(new WizardCard(s,v));
 			}
@@ -242,15 +242,15 @@ public class WizardGame extends CardGame implements WizardState {
 			return (WizardCard) deck.get(0).clone();
 	}
 	
-	public byte getTrumpSuit(){
+	public int getTrumpSuit(){
 		if(getTrumpIndicator() != null)
 			return getTrumpIndicator().getSuit();
 		
 		return -128;
 	}
 	
-	public static byte getFollowSuit(ArrayList<CardGameCard> table){
-		byte followSuit = -128;
+	public static int getFollowSuit(ArrayList<CardGameCard> table){
+		int followSuit = -128;
 		for(CardGameCard c : table)
 		{
 			if(c.value!=0)
@@ -269,7 +269,7 @@ public class WizardGame extends CardGame implements WizardState {
 		if(card.value==0||card.value==14)
 			return true;
 						
-		byte followSuit = getFollowSuit(tableCards);
+		int followSuit = getFollowSuit(tableCards);
 		
 		if(followSuit == -128)
 			return true;

@@ -49,7 +49,7 @@ public class WizardBot implements WizardController {
 	
 	@Override
 	public void notifyBid() {
-		byte trumpsuit = -128;
+		int trumpsuit = -128;
 		trumpsuit = gameState.getTrumpSuit();
 		
 		int bid=0;

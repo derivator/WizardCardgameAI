@@ -7,7 +7,7 @@ public interface WizardState extends CardGameState {
 	int getTotalBids();		
 	void doBid(int bid);
 
-	byte getTrumpSuit();
+	int getTrumpSuit();
 	
 	
 }
