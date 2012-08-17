@@ -1,13 +1,14 @@
 import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class CardGame implements CardGameState {
-	protected ArrayList<CardGamePlayer> players = new ArrayList<CardGamePlayer>();
+	protected List<CardGamePlayer> players = new ArrayList<>();
 	protected int turnPlayer;
 	protected int roundStarter;
 	protected int round;
-	protected ArrayList<CardGameCard> deck;
-	protected ArrayList<CardGameCard> tableCards = new ArrayList<CardGameCard>();
+	protected List<CardGameCard> deck;
+	protected List<CardGameCard> tableCards = new ArrayList<>();
 	protected boolean inProgress;
 	public boolean isInProgress() {
 		return inProgress;
@@ -52,17 +53,17 @@ public abstract class CardGame implements CardGameState {
 	}
 	
 	
-	public ArrayList<CardGameCard> getTableCards(){
+	public List<CardGameCard> getTableCards(){
 		return CardGame.cloneCards(tableCards);
 	}
 	
 	
-	static ArrayList<CardGameCard> cloneCards(ArrayList<CardGameCard> list)
+	static List<CardGameCard> cloneCards(List<CardGameCard> list)
 	{
 		if(list==null)
 			return null;
 		
-		ArrayList<CardGameCard> copy = new ArrayList<CardGameCard>();
+		List<CardGameCard> copy = new ArrayList<>();
 		for(CardGameCard card : list)
 		{
 			copy.add((CardGameCard) card.clone());

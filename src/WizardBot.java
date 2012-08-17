@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 
 public class WizardBot implements WizardController {
 	private final String name;
-	protected ArrayList<CardGameCard> hand; 
+	protected List<CardGameCard> hand; 
 	protected WizardState gameState;
 	private int myBid=0;
 	WizardBot(){
@@ -67,7 +68,7 @@ public class WizardBot implements WizardController {
 	}
 
 	@Override
-	public void notifyHand(ArrayList<CardGameCard> hand) {
+	public void notifyHand(List<CardGameCard> hand) {
 		this.hand=hand;
 		
 	}

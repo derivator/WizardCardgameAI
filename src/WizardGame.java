@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class WizardGame extends CardGame implements WizardState {
@@ -72,7 +73,7 @@ public class WizardGame extends CardGame implements WizardState {
 		Iterator<CardGameCard> it = deck.iterator();
 		for(CardGamePlayer p:players)
 		{
-			ArrayList<CardGameCard> dealtHand = new ArrayList<CardGameCard>();
+			List<CardGameCard> dealtHand = new ArrayList<>();
 			for(int i = 0;i<amount;i++)
 			{
 				dealtHand.add(it.next());
@@ -85,7 +86,7 @@ public class WizardGame extends CardGame implements WizardState {
 	}
 	
 	protected void setupDeck(){
-		deck = new ArrayList<CardGameCard>();
+		deck = new ArrayList<>();
 		for(int s=0;s<4;s++)
 		{
 			for(int v=0;v<15;v++)
@@ -214,7 +215,7 @@ public class WizardGame extends CardGame implements WizardState {
 
 	@Override
 	public void playCard(CardGameCard card) {
-		ArrayList<CardGameCard> hand = getWizardPlayer(turnPlayer).getHand();
+		List<CardGameCard> hand = getWizardPlayer(turnPlayer).getHand();
 		if(hand.contains(card) && cardLegallyPlayable(card,hand))
 		{
 			CardGameCard c = (CardGameCard) card.clone();
@@ -249,7 +250,7 @@ public class WizardGame extends CardGame implements WizardState {
 		return -128;
 	}
 	
-	public static int getFollowSuit(ArrayList<CardGameCard> table){
+	public static int getFollowSuit(List<CardGameCard> table){
 		int followSuit = -128;
 		for(CardGameCard c : table)
 		{
@@ -265,7 +266,7 @@ public class WizardGame extends CardGame implements WizardState {
 		return followSuit;
 	}
 	
-	public boolean cardLegallyPlayable(CardGameCard card, ArrayList<CardGameCard> hand){				
+	public boolean cardLegallyPlayable(CardGameCard card, List<CardGameCard> hand){				
 		if(card.value==0||card.value==14)
 			return true;
 						

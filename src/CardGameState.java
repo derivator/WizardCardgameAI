@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public interface CardGameState {
-	public ArrayList<CardGameCard> getTableCards();
-	public boolean cardLegallyPlayable(CardGameCard card, ArrayList<CardGameCard> hand);
+	public List<CardGameCard> getTableCards();
+	public boolean cardLegallyPlayable(CardGameCard card, List<CardGameCard> hand);
 	
 	public int getRound();
 	public int getTurnPlayer();

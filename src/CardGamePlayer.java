@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public abstract class CardGamePlayer {
 	protected final CardGame game;
 	protected PlayerController controller;
-	private ArrayList<CardGameCard> hand;
+	private List<CardGameCard> hand;
 	protected int score;
 	
 	CardGamePlayer(CardGame game, PlayerController controller){
@@ -14,7 +15,7 @@ public abstract class CardGamePlayer {
 		this.controller.assignGameState(game);
 	}
 	
-	public void setHand(ArrayList<CardGameCard> hand) {
+	public void setHand(List<CardGameCard> hand) {
 		this.hand = hand;
 		if(controller != null)
 		{
@@ -22,11 +23,11 @@ public abstract class CardGamePlayer {
 		}
 	}
 	
-	public ArrayList<CardGameCard> getHand() {
+	public List<CardGameCard> getHand() {
 		return hand;
 	}
 
-	public ArrayList<CardGameCard> getHandClone(){
+	public List<CardGameCard> getHandClone(){
 		return CardGame.cloneCards(hand);
 	}
 	
