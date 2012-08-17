@@ -1,0 +1,1 @@
+The aim of this project is to explore wether a computer can play the card game Wizard.
