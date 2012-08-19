@@ -1,4 +1,8 @@
-import java.util.ArrayList;
+package cardGame.wizard;
+
+
+import cardGame.CardGameCard;
+import cardGame.CardGameState;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -56,7 +60,7 @@ public class WizardBot implements WizardController {
 		int bid=0;
 		for(CardGameCard card : hand)
 		{
-			if((card.suit==trumpsuit && card.value > 6) || card.value==14 || card.value > 10 )
+			if((card.getSuit()==trumpsuit && card.getValue()> 6) || card.getValue()==14 || card.getValue() > 10 )
 				bid++;
 		}
 		

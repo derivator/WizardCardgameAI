@@ -1,3 +1,10 @@
+package cardGame.wizard;
+
+
+import cardGame.CardGameState;
+
+
+
 
 public interface WizardState extends CardGameState {
 	WizardCard getTrumpIndicator();

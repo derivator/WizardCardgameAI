@@ -1,3 +1,7 @@
+package cardGame;
+
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +18,7 @@ public abstract class CardGame implements CardGameState {
 		return inProgress;
 	}
 
-	CardGame(){
+	protected CardGame(){
 		round=-1;
 		turnPlayer=-1;
 		inProgress = false;

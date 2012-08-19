@@ -1,6 +1,13 @@
+package cardGame.wizard;
+
+
+
+import cardGame.CardGameCard;
+import CardGame.*;
+
 
 public class WizardCard extends CardGameCard {
-	static String suits = "GYRB";
+	public final static String suits = "GYRB";
 	WizardCard(int suit, int value){
 		super(suit, value);
 	}

@@ -1,9 +1,13 @@
+package cardGame;
+
+
+
 public class CardGameCard implements Comparable<CardGameCard>, Cloneable {
 	protected int suit;
 	protected int value;
 	protected int owner;
-	CardGameCard(){suit=-128;value=-128;}
-	CardGameCard(int suit, int value){
+	protected CardGameCard(){suit=-128;value=-128;}
+	protected CardGameCard(int suit, int value){
 		this.suit = suit;
 		this.value = value;
 		owner = 0;
@@ -31,13 +35,30 @@ public class CardGameCard implements Comparable<CardGameCard>, Cloneable {
 		CardGameCard c = (CardGameCard) o;
 		return c.suit==suit && c.value == value;
 	}
-	
-	public void setOwner(int o){owner = o;}
-	
-	public int getOwner(){return owner;}
 
-	public int getSuit(){return suit;}
+    public int getSuit() {
+        return suit;
+    }
+
+    public void setSuit(int suit) {
+        this.suit = suit;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+    }
 	
-	public int getValue(){return value;}
 	
 }

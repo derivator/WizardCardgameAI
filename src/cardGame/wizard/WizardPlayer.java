@@ -1,3 +1,10 @@
+package cardGame.wizard;
+
+
+import cardGame.CardGamePlayer;
+import cardGame.CardGame;
+
+
 
 public class WizardPlayer extends CardGamePlayer {
 	protected int currentBid;

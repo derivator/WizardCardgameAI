@@ -1,14 +1,20 @@
+package cardGame.wizard;
+
+
+
+import cardGame.CardGameCard;
 import java.util.Comparator;
+import CardGame.*;
 
 
 public class WizardComparator implements Comparator<CardGameCard> {
 	private final int trumpsuit;
 	private final int followsuit;
-	WizardComparator(int trumpsuit, int followsuit){
+	public WizardComparator(int trumpsuit, int followsuit){
 		this.trumpsuit = trumpsuit;
 		this.followsuit = followsuit;
 	}
-	WizardComparator(int trumpsuit){
+	public WizardComparator(int trumpsuit){
 		this(trumpsuit,(int) -127);
 	}
 	@Override
