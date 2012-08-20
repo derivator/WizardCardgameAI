@@ -51,7 +51,7 @@ public class WizardBot implements WizardController {
 	}
 	
 	@Override
-	public void notifyBid() {
+	public void bid() {
 		int trumpsuit = -128;
 		trumpsuit = gameState.getTrumpSuit();
 		

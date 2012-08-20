@@ -31,7 +31,7 @@ public class WizardPlayer extends CardGamePlayer {
     }
 
     public void notifyBid() {
-        ((WizardController) controller).notifyBid();
+        ((WizardController) controller).bid();
     }
 
     public void notifyTrickCompleted(List<CardGameCard> trick, CardGamePlayer player) {
