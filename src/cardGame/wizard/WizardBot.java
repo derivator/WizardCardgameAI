@@ -1,6 +1,5 @@
 package cardGame.wizard;
 
-
 import cardGame.CardGameCard;
 import cardGame.CardGamePlayer;
 import cardGame.CardGameState;

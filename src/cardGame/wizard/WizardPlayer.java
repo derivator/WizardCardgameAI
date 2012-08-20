@@ -1,8 +1,8 @@
 package cardGame.wizard;
 
-import cardGame.CardGamePlayer;
 import cardGame.CardGame;
 import cardGame.CardGameCard;
+import cardGame.CardGamePlayer;
 import java.util.List;
 
 public class WizardPlayer extends CardGamePlayer {

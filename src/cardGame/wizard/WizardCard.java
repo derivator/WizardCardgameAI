@@ -1,10 +1,6 @@
 package cardGame.wizard;
 
-
-
 import cardGame.CardGameCard;
-import CardGame.*;
-
 
 public class WizardCard extends CardGameCard {
 	public final static String suits = "GYRB";

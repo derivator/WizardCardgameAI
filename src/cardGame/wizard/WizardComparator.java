@@ -1,10 +1,7 @@
 package cardGame.wizard;
 
-
-
 import cardGame.CardGameCard;
 import java.util.Comparator;
-import CardGame.*;
 
 
 public class WizardComparator implements Comparator<CardGameCard> {
