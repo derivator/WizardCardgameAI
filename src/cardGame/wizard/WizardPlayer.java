@@ -1,52 +1,49 @@
 package cardGame.wizard;
 
-
 import cardGame.CardGamePlayer;
 import cardGame.CardGame;
-
-
+import cardGame.CardGameCard;
+import java.util.List;
 
 public class WizardPlayer extends CardGamePlayer {
-	protected int currentBid;
-	protected int tricks;
-	
-	WizardPlayer(CardGame game,WizardController controller) {
-		super(game, controller);
-		
-	}
-	
-	public int getCurrentBid() {
-		return currentBid;
-	}
 
-	public void setCurrentBid(int currentBid) {
-		this.currentBid = currentBid;
-	}
+    protected int currentBid;
+    protected int tricks;
 
-	public int getTricks() {
-		return tricks;
-	}
+    public WizardPlayer(CardGame game, WizardController controller) {
+        super(game, controller);
+    }
 
-	public void resetTricks() {
-		this.tricks = 0;
-	}
+    public int getCurrentBid() {
+        return currentBid;
+    }
 
-	@Override
-	public void notifyTurn() {
-		controller.notifyTurn();		
-	}
-	
-	public void notifyBid(){
-		((WizardController)controller).notifyBid();
-	}
+    public void setCurrentBid(int currentBid) {
+        this.currentBid = currentBid;
+    }
 
-	public void addTrick() {
-		tricks++;
-		
-	}
-	
-	public String toString(){
-		return super.toString() + "("+tricks+"/" + currentBid +")";
-	}
+    public int getTricks() {
+        return tricks;
+    }
 
+    public void resetTricks() {
+        this.tricks = 0;
+    }
+
+    public void notifyBid() {
+        ((WizardController) controller).notifyBid();
+    }
+
+    public void notifyTrickCompleted(List<CardGameCard> trick, CardGamePlayer player) {
+        ((WizardController) controller).notifyTrickCompleted(trick, player);
+    }
+
+    public void addTrick() {
+        tricks++;
+
+    }
+
+    public String toString() {
+        return super.toString() + "(" + tricks + "/" + currentBid + ")";
+    }
 }

@@ -2,6 +2,7 @@ package cardGame.wizard;
 
 
 import cardGame.CardGameCard;
+import cardGame.CardGamePlayer;
 import cardGame.CardGameState;
 import java.util.Collections;
 import java.util.List;
@@ -28,9 +29,8 @@ public class WizardBot implements WizardController {
 	}
 	
 	@Override
-	public void notifyTurn() {
+	public void move() {
 		boolean overBid = gameState.getTotalBids()>=gameState.getRound();
-		
 		
 		Collections.sort(hand, new WizardComparator(gameState.getTrumpSuit()));
 		if(myBid==gameState.getTricks(gameState.getTurnPlayer()) || !overBid && gameState.getTricks(gameState.getTurnPlayer())>myBid)
@@ -40,13 +40,10 @@ public class WizardBot implements WizardController {
 			if(gameState.cardLegallyPlayable(card, hand))
 			{
 				//gameState.getTableCards().
-				gameState.playCard(card);
-				
+				gameState.playCard(card);				
 				break;
-			}
-			
+			}	
 		}
-		
 		
 	}
 	private void playLowCard(boolean trickDesired)
@@ -84,5 +81,15 @@ public class WizardBot implements WizardController {
 		gameState = (WizardState) state;
 		
 	}
+
+    @Override
+    public void notifyMove() {
+        //TODO: add code
+    }
+
+    @Override
+    public void notifyTrickCompleted(List<CardGameCard> trick, CardGamePlayer player) {
+        //TODO add code
+    }
 
 }

@@ -1,6 +1,5 @@
 package cardGame.wizard;
 
-
 import cardGame.CardGame;
 import cardGame.CardGameCard;
 import cardGame.CardGamePlayer;
@@ -15,7 +14,8 @@ public class WizardGame extends CardGame implements WizardState {
     public enum RoundPhase {
 
         Bidding,
-        Playing,}
+        Playing,
+    }
     protected RoundPhase roundPhase;
     protected boolean unevenBids = true;
     protected boolean waitingForCard = false;
@@ -69,7 +69,7 @@ public class WizardGame extends CardGame implements WizardState {
 
     @Override
     public void startTurn() {
-        getWizardPlayer(turnPlayer).notifyTurn();
+        getWizardPlayer(turnPlayer).move();
     }
 
     public void dealCards(int amount) {
@@ -103,11 +103,11 @@ public class WizardGame extends CardGame implements WizardState {
     }
 
     @Override
-	public int getTricks(int player) {
-		return this.getWizardPlayer(player).getTricks();
-	}
+    public int getTricks(int player) {
+        return this.getWizardPlayer(player).getTricks();
+    }
 
-	@Override
+    @Override
     public void doBid(int bid) {
         if (unevenBids && getNextPlayer() == roundStarter && getTotalBids() + bid == round) {
 
@@ -162,12 +162,15 @@ public class WizardGame extends CardGame implements WizardState {
             nextPlayer();
             if (turnPlayer == trickStarter) {
                 System.out.println(tableCards.toString());
+                List<CardGameCard> trick = CardGame.cloneCards(tableCards);
                 Collections.sort(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
                 trickStarter = tableCards.get(0).getOwner();
                 turnPlayer = tableCards.get(0).getOwner();
                 getWizardPlayer(turnPlayer).addTrick();
+                for (CardGamePlayer p : players) {
+                    ((WizardPlayer)p).notifyTrickCompleted(trick, getWizardPlayer(turnPlayer));
+                }
                 nextTrick();
-                //TODO: tell controllers the final trick state
 
 
             } else {
@@ -219,6 +222,9 @@ public class WizardGame extends CardGame implements WizardState {
             hand.remove(card);
             getWizardPlayer(turnPlayer).setHand(hand);
             waitingForCard = false;
+            for (CardGamePlayer p : players) {
+                p.getController().notifyMove();
+            }
         } else {
             try {
                 throw new Exception("illegal card played!");

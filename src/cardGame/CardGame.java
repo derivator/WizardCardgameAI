@@ -62,7 +62,7 @@ public abstract class CardGame implements CardGameState {
 	}
 	
 	
-	static List<CardGameCard> cloneCards(List<CardGameCard> list)
+	public static List<CardGameCard> cloneCards(List<CardGameCard> list)
 	{
 		if(list==null)
 			return null;

@@ -27,7 +27,7 @@ public abstract class CardGamePlayer {
     }
 
     public List<CardGameCard> getHand() {
-        return hand;
+        return getHandClone();
     }
 
     public List<CardGameCard> getHandClone() {
@@ -69,5 +69,12 @@ public abstract class CardGamePlayer {
         return result;
     }
 
-    public abstract void notifyTurn();
+    public void move() {
+        controller.move();
+    }
+    
+    public void notifyMove() {
+        controller.notifyMove();
+    }
+    
 }
