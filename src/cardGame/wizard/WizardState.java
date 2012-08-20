@@ -11,6 +11,7 @@ public interface WizardState extends CardGameState {
 	
 	boolean unevenBidsEnforced();
 	int getBid(int player);
+	int getTricks(int player);
 	int getTotalBids();		
 	void doBid(int bid);
 

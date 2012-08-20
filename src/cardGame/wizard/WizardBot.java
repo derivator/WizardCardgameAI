@@ -29,10 +29,12 @@ public class WizardBot implements WizardController {
 	
 	@Override
 	public void notifyTurn() {
-		if(gameState.getTotalBids()>=gameState.getRound());
+		boolean overBid = gameState.getTotalBids()>=gameState.getRound();
+		
 		
 		Collections.sort(hand, new WizardComparator(gameState.getTrumpSuit()));
-		Collections.reverse(hand);
+		if(myBid==gameState.getTricks(gameState.getTurnPlayer()) || !overBid && gameState.getTricks(gameState.getTurnPlayer())>myBid)
+				Collections.reverse(hand);
 		for(CardGameCard card : hand)
 		{
 			if(gameState.cardLegallyPlayable(card, hand))

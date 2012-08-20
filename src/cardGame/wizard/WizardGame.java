@@ -103,6 +103,11 @@ public class WizardGame extends CardGame implements WizardState {
     }
 
     @Override
+	public int getTricks(int player) {
+		return this.getWizardPlayer(player).getTricks();
+	}
+
+	@Override
     public void doBid(int bid) {
         if (unevenBids && getNextPlayer() == roundStarter && getTotalBids() + bid == round) {
 
