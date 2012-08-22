@@ -1,10 +1,10 @@
 package cardGame.wizard;
 
-import cardGame.CardGameCard;
+import cardGame.Card;
 import java.util.Comparator;
 
 
-public class WizardComparator implements Comparator<CardGameCard> {
+public class WizardComparator implements Comparator<Card> {
 	private final int trumpsuit;
 	private final int followsuit;
 	public WizardComparator(int trumpsuit, int followsuit){
@@ -12,10 +12,10 @@ public class WizardComparator implements Comparator<CardGameCard> {
 		this.followsuit = followsuit;
 	}
 	public WizardComparator(int trumpsuit){
-		this(trumpsuit,(int) -127);
+		this(trumpsuit, -127);
 	}
 	@Override
-	public int compare(CardGameCard arg0, CardGameCard arg1) {
+	public int compare(Card arg0, Card arg1) {
 		if(arg1.getValue()==14)
 		{
 			if(arg0.getValue()==14)

@@ -6,23 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class CardGame implements CardGameState {
-	protected List<CardGamePlayer> players = new ArrayList<>();
-	protected int turnPlayer;
+public abstract class Game implements State {
+        public final int minPlayers;
+        public final int maxPlayers;
+        
+	protected List<Player> players = new ArrayList<>();
+	protected int turnPlayer = -1;
 	protected int roundStarter;
-	protected int round;
-	protected List<CardGameCard> deck;
-	protected List<CardGameCard> tableCards = new ArrayList<>();
-	protected boolean inProgress;
+	protected int round =-1;
+	protected List<Card> deck;
+	protected List<Card> tableCards = new ArrayList<>();
+	protected boolean inProgress = false;
+        
+        public int getNumberOfPlayers() {
+            return players.size();
+        }
+        
 	public boolean isInProgress() {
 		return inProgress;
 	}
 
-	protected CardGame(){
-		round=-1;
-		turnPlayer=-1;
-		inProgress = false;
-	}
+    public Game(int minPlayers, int maxPlayers) {
+        this.minPlayers = minPlayers;
+        this.maxPlayers = maxPlayers;
+    }
+        
 	
 	public abstract void addPlayer(PlayerController pc);
 	
@@ -57,20 +65,20 @@ public abstract class CardGame implements CardGameState {
 	}
 	
 	
-	public List<CardGameCard> getTableCards(){
-		return CardGame.cloneCards(tableCards);
+	public List<Card> getTableCards(){
+		return Game.cloneCards(tableCards);
 	}
 	
 	
-	public static List<CardGameCard> cloneCards(List<CardGameCard> list)
+	public static List<Card> cloneCards(List<Card> list)
 	{
 		if(list==null)
 			return null;
 		
-		List<CardGameCard> copy = new ArrayList<>();
-		for(CardGameCard card : list)
+		List<Card> copy = new ArrayList<>();
+		for(Card card : list)
 		{
-			copy.add((CardGameCard) card.clone());
+			copy.add((Card) card.clone());
 		}
 		return copy;
 	}

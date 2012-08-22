@@ -1,16 +1,16 @@
 package cardGame.wizard;
 
-import cardGame.CardGame;
-import cardGame.CardGameCard;
-import cardGame.CardGamePlayer;
+import cardGame.Game;
+import cardGame.Card;
+import cardGame.Player;
 import java.util.List;
 
-public class WizardPlayer extends CardGamePlayer {
+public class WizardPlayer extends Player {
 
     protected int currentBid;
     protected int tricks;
 
-    public WizardPlayer(CardGame game, WizardController controller) {
+    public WizardPlayer(Game game, WizardController controller) {
         super(game, controller);
     }
 
@@ -34,7 +34,7 @@ public class WizardPlayer extends CardGamePlayer {
         ((WizardController) controller).bid();
     }
 
-    public void notifyTrickCompleted(List<CardGameCard> trick, CardGamePlayer player) {
+    public void notifyTrickCompleted(List<Card> trick, Player player) {
         ((WizardController) controller).notifyTrickCompleted(trick, player);
     }
 

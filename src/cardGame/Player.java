@@ -6,32 +6,32 @@ package cardGame;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class CardGamePlayer {
+public abstract class Player {
 
-    protected final CardGame game;
+    protected final Game game;
     protected PlayerController controller;
-    private List<CardGameCard> hand;
+    private List<Card> hand;
     protected int score;
 
-    protected CardGamePlayer(CardGame game, PlayerController controller) {
+    protected Player(Game game, PlayerController controller) {
         this.game = game;
         this.controller = controller;
         this.controller.assignGameState(game);
     }
 
-    public void setHand(List<CardGameCard> hand) {
+    public void setHand(List<Card> hand) {
         this.hand = hand;
         if (controller != null) {
             controller.notifyHand(getHandClone());
         }
     }
 
-    public List<CardGameCard> getHand() {
+    public List<Card> getHand() {
         return getHandClone();
     }
 
-    public List<CardGameCard> getHandClone() {
-        return CardGame.cloneCards(hand);
+    public List<Card> getHandClone() {
+        return Game.cloneCards(hand);
     }
 
     public PlayerController getController() {
@@ -58,7 +58,7 @@ public abstract class CardGamePlayer {
         }
 
         result += ":[";
-        Iterator<? extends CardGameCard> it = hand.iterator();
+        Iterator<? extends Card> it = hand.iterator();
         while (it.hasNext()) {
             result += it.next().toString();
             if (it.hasNext()) {

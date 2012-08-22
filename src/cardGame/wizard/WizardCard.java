@@ -1,8 +1,8 @@
 package cardGame.wizard;
 
-import cardGame.CardGameCard;
+import cardGame.Card;
 
-public class WizardCard extends CardGameCard {
+public class WizardCard extends Card {
 	public final static String suits = "GYRB";
 	WizardCard(int suit, int value){
 		super(suit, value);

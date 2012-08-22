@@ -1,15 +1,21 @@
 package cardGame.wizard;
 
-import cardGame.CardGame;
-import cardGame.CardGameCard;
-import cardGame.CardGamePlayer;
+import cardGame.Game;
+import cardGame.Card;
+import cardGame.Player;
 import cardGame.PlayerController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class WizardGame extends CardGame implements WizardState {
+public class WizardGame extends Game implements WizardState {
+
+    public WizardGame() {
+        super(3,6);
+    }
+    
+    
 
     public enum RoundPhase {
 
@@ -53,14 +59,14 @@ public class WizardGame extends CardGame implements WizardState {
         setupDeck();
         dealCards(round);
         roundPhase = RoundPhase.Bidding;
-        for (CardGamePlayer player : players) {
+        for (Player player : players) {
             ((WizardPlayer) player).resetTricks();
             ((WizardPlayer) player).currentBid = -1;
         }
     }
 
     private void printScore() {
-        for (CardGamePlayer player : players) {
+        for (Player player : players) {
             WizardPlayer p = (WizardPlayer) player;
             System.out.println(p.getController().getName() + ": " + p.getScore());
         }
@@ -73,9 +79,9 @@ public class WizardGame extends CardGame implements WizardState {
     }
 
     public void dealCards(int amount) {
-        Iterator<CardGameCard> it = deck.iterator();
-        for (CardGamePlayer p : players) {
-            List<CardGameCard> dealtHand = new ArrayList<>();
+        Iterator<Card> it = deck.iterator();
+        for (Player p : players) {
+            List<Card> dealtHand = new ArrayList<>();
             for (int i = 0; i < amount; i++) {
                 dealtHand.add(it.next());
                 it.remove();
@@ -162,12 +168,12 @@ public class WizardGame extends CardGame implements WizardState {
             nextPlayer();
             if (turnPlayer == trickStarter) {
                 System.out.println(tableCards.toString());
-                List<CardGameCard> trick = CardGame.cloneCards(tableCards);
+                List<Card> trick = Game.cloneCards(tableCards);
                 Collections.sort(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
                 trickStarter = tableCards.get(0).getOwner();
                 turnPlayer = tableCards.get(0).getOwner();
                 getWizardPlayer(turnPlayer).addTrick();
-                for (CardGamePlayer p : players) {
+                for (Player p : players) {
                     ((WizardPlayer)p).notifyTrickCompleted(trick, getWizardPlayer(turnPlayer));
                 }
                 nextTrick();
@@ -192,7 +198,7 @@ public class WizardGame extends CardGame implements WizardState {
     }
 
     private void doScore() {
-        for (CardGamePlayer player : players) {
+        for (Player player : players) {
             WizardPlayer p = (WizardPlayer) player;
             int newScore;
             if (p.getTricks() == p.getCurrentBid()) {
@@ -213,16 +219,16 @@ public class WizardGame extends CardGame implements WizardState {
     }
 
     @Override
-    public void playCard(CardGameCard card) {
-        List<CardGameCard> hand = getWizardPlayer(turnPlayer).getHand();
+    public void playCard(Card card) {
+        List<Card> hand = getWizardPlayer(turnPlayer).getHand();
         if (hand.contains(card) && cardLegallyPlayable(card, hand)) {
-            CardGameCard c = (CardGameCard) card.clone();
+            Card c = (Card) card.clone();
             c.setOwner(turnPlayer);
             tableCards.add(c);
             hand.remove(card);
             getWizardPlayer(turnPlayer).setHand(hand);
             waitingForCard = false;
-            for (CardGamePlayer p : players) {
+            for (Player p : players) {
                 p.getController().notifyMove();
             }
         } else {
@@ -251,22 +257,26 @@ public class WizardGame extends CardGame implements WizardState {
         return -128;
     }
 
-    public static int getFollowSuit(List<CardGameCard> table) {
+    public static int getFollowSuit(List<Card> table) {
         int followSuit = -128;
-        for (CardGameCard c : table) {
+        for (Card c : table) {
             if (c.getValue() != 0) {
                 if (c.getValue() == 14) {
                     return -128;
                 }
-
                 followSuit = c.getSuit();
                 break;
             }
         }
         return followSuit;
     }
+    
+    @Override
+    public boolean cardLegallyPlayable(Card card, List<Card> hand) {
+        return cardLegallyPlayable(tableCards, card, hand);
+    }
 
-    public boolean cardLegallyPlayable(CardGameCard card, List<CardGameCard> hand) {
+    public static boolean cardLegallyPlayable(List<Card> tableCards, Card card, List<Card> hand) {
         if (card.getValue() == 0 || card.getValue() == 14) {
             return true;
         }
@@ -281,7 +291,7 @@ public class WizardGame extends CardGame implements WizardState {
             return true;
         }
 
-        for (CardGameCard c : hand) {
+        for (Card c : hand) {
             if (c.getSuit() == followSuit && c.getValue() != 0 && c.getValue() != 14) {
                 return false;
             }
