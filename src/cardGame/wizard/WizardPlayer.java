@@ -7,7 +7,7 @@ import java.util.List;
 
 public class WizardPlayer extends Player {
 
-    protected int currentBid;
+    protected int bid;
     protected int tricks;
 
     public WizardPlayer(Game game, WizardController controller) {
@@ -15,11 +15,11 @@ public class WizardPlayer extends Player {
     }
 
     public int getCurrentBid() {
-        return currentBid;
+        return bid;
     }
 
     public void setCurrentBid(int currentBid) {
-        this.currentBid = currentBid;
+        this.bid = currentBid;
     }
 
     public int getTricks() {
@@ -44,6 +44,6 @@ public class WizardPlayer extends Player {
     }
 
     public String toString() {
-        return super.toString() + "(" + tricks + "/" + currentBid + ")";
+        return super.toString() + "(" + tricks + "/" + bid + ")";
     }
 }

@@ -1,22 +1,22 @@
 package cardGame.wizard;
 
+import cardGame.GameState;
 
-import cardGame.State;
+public interface WizardState extends GameState {
 
+    public void doBid(int bid);
 
+    public boolean unevenBidsEnforced();
 
+    public int getBid(int player);
 
-public interface WizardState extends State {
-    
-	public WizardCard getTrumpIndicator();
-	
-	public boolean unevenBidsEnforced();
-	public int getBid(int player);
-	public int getTricks(int player);
-	public int getTotalBids();		
-	public void doBid(int bid);
+    public int getTricks(int player);
 
-	int getTrumpSuit();
-	
-	
+    public int getScore(int player);
+
+    public int getTotalBids();
+       
+    public WizardCard getTrumpIndicator();
+
+    public int getTrumpSuit();
 }

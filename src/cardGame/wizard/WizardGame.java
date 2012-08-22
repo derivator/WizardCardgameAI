@@ -1,7 +1,7 @@
 package cardGame.wizard;
 
-import cardGame.Game;
 import cardGame.Card;
+import cardGame.Game;
 import cardGame.Player;
 import cardGame.PlayerController;
 import java.util.ArrayList;
@@ -14,15 +14,13 @@ public class WizardGame extends Game implements WizardState {
     public WizardGame() {
         super(3,6);
     }
-    
-    
+
 
     public enum RoundPhase {
-
         Bidding,
-        Playing,
-    }
+        Playing,}
     protected RoundPhase roundPhase;
+    
     protected boolean unevenBids = true;
     protected boolean waitingForCard = false;
     protected int trickStarter;
@@ -51,33 +49,26 @@ public class WizardGame extends Game implements WizardState {
             return;
         }
         tableCards.clear();
-        turnPlayer = roundStarter;
+        currentPlayer = roundStarter;
         nextPlayer();
-        roundStarter = turnPlayer;
-        trickStarter = turnPlayer;
+        roundStarter = currentPlayer;
+        trickStarter = currentPlayer;
 
         setupDeck();
         dealCards(round);
         roundPhase = RoundPhase.Bidding;
         for (Player player : players) {
             ((WizardPlayer) player).resetTricks();
-            ((WizardPlayer) player).currentBid = -1;
+            ((WizardPlayer) player).bid = -1;
         }
-    }
-
-    private void printScore() {
-        for (Player player : players) {
-            WizardPlayer p = (WizardPlayer) player;
-            System.out.println(p.getController().getName() + ": " + p.getScore());
-        }
-        System.out.println("Over/Under-Bid: " + overUnderBid);
     }
 
     @Override
     public void startTurn() {
-        getWizardPlayer(turnPlayer).move();
+        getWizardPlayer(currentPlayer).move();
     }
 
+    @Override
     public void dealCards(int amount) {
         Iterator<Card> it = deck.iterator();
         for (Player p : players) {
@@ -105,7 +96,7 @@ public class WizardGame extends Game implements WizardState {
 
     @Override
     public int getBid(int player) {
-        return getWizardPlayer(player).currentBid;
+        return getWizardPlayer(player).bid;
     }
 
     @Override
@@ -124,7 +115,7 @@ public class WizardGame extends Game implements WizardState {
                 e.printStackTrace();
             }
         }
-        getWizardPlayer(turnPlayer).currentBid = bid;
+        getWizardPlayer(currentPlayer).bid = bid;
     }
 
     public int getTotalBids() {
@@ -149,32 +140,32 @@ public class WizardGame extends Game implements WizardState {
         }
     }
 
-    public void phaseBidding() {
-        if (getBid(turnPlayer) == -1) {
-            getWizardPlayer(turnPlayer).notifyBid();
+    private void phaseBidding() {
+        if (getBid(currentPlayer) == -1) {
+            getWizardPlayer(currentPlayer).notifyBid();
         } else {
             nextPlayer();
-            if (turnPlayer == roundStarter) {
+            if (currentPlayer == roundStarter) {
                 roundPhase = RoundPhase.Playing;
                 waitingForCard = true;
             }
         }
     }
 
-    public void phasePlaying() {
+    private void phasePlaying() {
         if (waitingForCard) {
             startTurn();
         } else {
             nextPlayer();
-            if (turnPlayer == trickStarter) {
+            if (currentPlayer == trickStarter) {
                 System.out.println(tableCards.toString());
                 List<Card> trick = Game.cloneCards(tableCards);
                 Collections.sort(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
                 trickStarter = tableCards.get(0).getOwner();
-                turnPlayer = tableCards.get(0).getOwner();
-                getWizardPlayer(turnPlayer).addTrick();
+                currentPlayer = tableCards.get(0).getOwner();
+                getWizardPlayer(currentPlayer).addTrick();
                 for (Player p : players) {
-                    ((WizardPlayer)p).notifyTrickCompleted(trick, getWizardPlayer(turnPlayer));
+                    ((WizardPlayer)p).notifyTrickCompleted(trick, getWizardPlayer(currentPlayer));
                 }
                 nextTrick();
 
@@ -188,7 +179,7 @@ public class WizardGame extends Game implements WizardState {
 
     private void nextTrick() {
         tableCards.clear();
-        if (getWizardPlayer(turnPlayer).getHand().isEmpty()) {
+        if (getWizardPlayer(currentPlayer).getHand().isEmpty()) {
             doScore();
             startRound();
 
@@ -219,14 +210,18 @@ public class WizardGame extends Game implements WizardState {
     }
 
     @Override
+    public int getScore(int player) {
+        return players.get(player).getScore();
+    }
+    @Override
     public void playCard(Card card) {
-        List<Card> hand = getWizardPlayer(turnPlayer).getHand();
+        List<Card> hand = getWizardPlayer(currentPlayer).getHand();
         if (hand.contains(card) && cardLegallyPlayable(card, hand)) {
             Card c = (Card) card.clone();
-            c.setOwner(turnPlayer);
+            c.setOwner(currentPlayer);
             tableCards.add(c);
             hand.remove(card);
-            getWizardPlayer(turnPlayer).setHand(hand);
+            getWizardPlayer(currentPlayer).setHand(hand);
             waitingForCard = false;
             for (Player p : players) {
                 p.getController().notifyMove();
@@ -253,7 +248,6 @@ public class WizardGame extends Game implements WizardState {
         if (getTrumpIndicator() != null) {
             return getTrumpIndicator().getSuit();
         }
-
         return -128;
     }
 
@@ -299,10 +293,15 @@ public class WizardGame extends Game implements WizardState {
 
         return true;
     }
+    
+    private void printScore() {
+        for (Player player : players) {
+            WizardPlayer p = (WizardPlayer) player;
+            System.out.println(p.getController().getName() + ": " + p.getScore());
+        }
+        System.out.println("Over/Under-Bid: " + overUnderBid);
+    }
 
-    /**
-     * @param args
-     */
     @SuppressWarnings("unused")
     public static void main(String[] args) {
         WizardGame game = new WizardGame();

@@ -2,7 +2,7 @@ package cardGame.wizard;
 
 import cardGame.Card;
 import cardGame.Player;
-import cardGame.State;
+import cardGame.GameState;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -32,7 +32,7 @@ public class WizardBot implements WizardController {
 		boolean overBid = gameState.getTotalBids()>=gameState.getRound();
 		
 		Collections.sort(hand, new WizardComparator(gameState.getTrumpSuit()));
-		if(myBid==gameState.getTricks(gameState.getTurnPlayer()) || !overBid && gameState.getTricks(gameState.getTurnPlayer())>myBid)
+		if(myBid==gameState.getTricks(gameState.getCurrentPlayer()) || !overBid && gameState.getTricks(gameState.getCurrentPlayer())>myBid)
 				Collections.reverse(hand);
 		for(Card card : hand)
 		{
@@ -62,7 +62,7 @@ public class WizardBot implements WizardController {
 				bid++;
 		}
 		
-		if(gameState.getTotalBids() + bid == gameState.getRound() && gameState.unevenBidsEnforced() && gameState.getNextPlayer()==gameState.getTurnStarter())
+		if(gameState.getTotalBids() + bid == gameState.getRound() && gameState.unevenBidsEnforced() && gameState.getNextPlayer()==gameState.getRoundStarter())
 			bid++;
 		
 		myBid=bid;
@@ -76,7 +76,7 @@ public class WizardBot implements WizardController {
 	}
 
 	@Override
-	public void assignGameState(State state) {
+	public void assignGameState(GameState state) {
 		gameState = (WizardState) state;
 		
 	}
