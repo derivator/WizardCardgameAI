@@ -4,7 +4,9 @@
  */
 package cardGame.wizard.bot.gameTree;
 
+import cardGame.Card;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,12 +27,23 @@ public class Node {
         this.Parent = Parent;
     }
 
-    public void addChild(State state) {
-        if (children == null)  {
-            children = new ArrayList<>();          
+    public Node expandNode(Card card) {
+        if (children == null) {
+            children = new ArrayList<>();
         }
-        children.add(new Node(state, this));
-        
+        State newState = state.makeMove(card);
+        Node newNode = new Node(newState, this);
+        children.add(newNode); 
+        return newNode;
+    }
+    
+    public void randomExpand() {
+        Node node = this;
+        while (!node.getState().isFinalState()) {
+            List<Card> playable = node.getState().getPlayableCards();
+            Collections.shuffle(playable);   
+            node = node.expandNode(playable.get(0));
+        }
     }
 
     public List<Node> getChildren() {

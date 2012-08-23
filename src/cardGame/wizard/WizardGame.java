@@ -2,6 +2,7 @@ package cardGame.wizard;
 
 import cardGame.Card;
 import cardGame.Game;
+import cardGame.GameState;
 import cardGame.Player;
 import cardGame.PlayerController;
 import cardGame.wizard.bot.gameTree.GameTree;
@@ -234,7 +235,7 @@ public class WizardGame extends Game implements WizardState {
             System.out.println(getWizardPlayer(currentPlayer).getController().getName()+" plays " + c);
         } else {
             try {
-                throw new Exception("illegal card played!");
+                throw new IllegalArgumentException("Illegal card played!");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -333,18 +334,21 @@ public class WizardGame extends Game implements WizardState {
                 //wait for network/user input here?
                 game.advance();
                 /*
-                if (game.roundPhase == RoundPhase.Playing && game.players.get(0).getHand() != null) {
-                    ArrayList<Card>[] hands = new ArrayList[4];
+                if (game.roundPhase == RoundPhase.Playing && game.players.get(0).getHand() != null && game.round == 3) {
+                    ArrayList<Card>[] hands = new ArrayList[game.players.size()];
                     int k = 0;
                     for (Player p : game.players) {
                         hands[k] = (ArrayList) p.getHand();
                         k++;
                     }
-                    test = new GameTree(game, new State(0, 0, new int[game.getNumberOfPlayers()], game.tableCards , hands));
-                    test.expandNode(test.root, game.players.get(game.currentPlayer).getHand().get(0));
+                    test = new GameTree(new State(game.currentPlayer, 1, new int[game.getNumberOfPlayers()], game.tableCards , hands));
+                    State.initialize(game);
+                    test.root.randomExpand();
+                    
                     
                 }
-                 */
+              
+                  */
             }
         }
         game.printScore();

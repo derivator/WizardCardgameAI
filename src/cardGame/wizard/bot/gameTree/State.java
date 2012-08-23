@@ -5,61 +5,141 @@
 package cardGame.wizard.bot.gameTree;
 
 import cardGame.Card;
-import cardGame.Game;
 import cardGame.wizard.WizardComparator;
 import cardGame.wizard.WizardGame;
+import cardGame.wizard.WizardState;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-/**
- *
- * @author Olli
- */
 public class State {
 
+    private static int players;
+    private static int round;
+    private static int trumpSuit;
+    private static int[] scores;
+    private static int[] bids;
+
+    
     private int currentPlayer;
     private int currentTrick;
-    
-    private int[] tricksByPlayer;
-    
+    private int[] playerTricks;
     private ArrayList<Card> tableCards;
-    private ArrayList<Card>[] handsByPlayer;
+    private ArrayList<Card>[] playerHands;
 
     public State(int currentPlayer, int currentTrick, int[] tricksByPlayer, ArrayList<Card> tableCards, ArrayList<Card>[] handsByPlayer) {
         this.currentPlayer = currentPlayer;
         this.currentTrick = currentTrick;
-        this.tricksByPlayer = tricksByPlayer;
+        this.playerTricks = tricksByPlayer;
         this.tableCards = tableCards;
-        this.handsByPlayer = handsByPlayer;
+        this.playerHands = handsByPlayer;
     }
-    
-    public State makeMove(Card card, int numberOfPlayers, int trumpSuit) {
-        ArrayList<Card> hand = handsByPlayer[currentPlayer];  
-        ArrayList<Card>[] newHandsByPlayer = handsByPlayer.clone();
-        ArrayList<Card> newHand = newHandsByPlayer[currentPlayer];
+
+    public State makeMove(Card card) {
+        ArrayList<Card> hand = playerHands[currentPlayer];
+        ArrayList<Card>[] newPlayerHands = playerHands.clone();
+        ArrayList<Card> newHand;
         ArrayList<Card> newTableCards = null;
         int newCurrentPlayer = currentPlayer;
         int newCurrentTrick = currentTrick;
-        int[] newTricksByPlayer = tricksByPlayer.clone();
-        
+        int[] newPlayerTricks = playerTricks.clone();
+
         if (WizardGame.cardLegallyPlayable(tableCards, card, hand)) {
             newHand = (ArrayList<Card>) hand.clone();
             newHand.remove(card);
-            newTableCards = (ArrayList<Card>) tableCards.clone();    
+            newPlayerHands[currentPlayer] = newHand;
+            newTableCards = (ArrayList<Card>) tableCards.clone();
             card.setOwner(currentPlayer);
             newTableCards.add(card);
+            newCurrentPlayer = (currentPlayer + 1) % players;
+        } else {
+            throw new IllegalArgumentException("Illegal card played!");
         }
-        if (tableCards.size() == numberOfPlayers) {
-            Card highestCard =  Collections.min(tableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(tableCards)));
+        if (newTableCards.size() == players) {
+            Card highestCard = Collections.min(tableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(tableCards)));
             int trickWinner = highestCard.getOwner();
-            tricksByPlayer[trickWinner]++;
+            playerTricks[trickWinner]++;
             newCurrentPlayer = trickWinner;
-            newTableCards = new ArrayList<>(numberOfPlayers);
+            newTableCards = new ArrayList<>(players);
             newCurrentTrick++;
-           
         }
-        return new State(newCurrentPlayer, newCurrentTrick, newTricksByPlayer, newTableCards, newHandsByPlayer);
+        return new State(newCurrentPlayer, newCurrentTrick, newPlayerTricks, newTableCards, newPlayerHands);
     }
+    
+    public boolean isFinalState() {
+
+        for (int i = 0; i < playerHands.length; i++) {
+            if (!playerHands[i].isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int getPlayers() {
+        return players;
+    }
+
+    public static int getRound() {
+        return round;
+    }
+
+    public static int getTrumpSuit() {
+        return trumpSuit;
+    }
+
+    public static int[] getScores() {
+        return scores;
+    }
+
+    public static int[] getBids() {
+        return bids;
+    }
+
+    public int getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public int getCurrentTrick() {
+        return currentTrick;
+    }
+
+    public int[] getPlayerTricks() {
+        return playerTricks;
+    }
+
+    public ArrayList<Card> getTableCards() {
+        return tableCards;
+    }
+
+    public ArrayList<Card>[] getPlayerHands() {
+        return playerHands;
+    }
+    
+    public boolean cardLegallyPlayable(Card c) {
+        return WizardGame.cardLegallyPlayable(tableCards, c, playerHands[currentPlayer]);
+    }
+    
+     public ArrayList<Card> getPlayableCards() {
+         ArrayList<Card> playableCards = new ArrayList<>();
+         for (Card c : playerHands[currentPlayer]) {
+             if (cardLegallyPlayable(c)) {
+                 playableCards.add(c);
+             }    
+         }
+        return playableCards;
+    }
+
+    public static void initialize(WizardState state) {
+        players = state.getNumberOfPlayers();
+        round = state.getRound();
+        scores = new int[players];
+        bids = new int[players];
+        for (int i = 0; i < players; i++) {
+            scores[i] = state.getScore(i);
+            bids[i] = state.getBid(i);
+        }
+        trumpSuit = state.getTrumpSuit();
+    }
+    
     
 }
