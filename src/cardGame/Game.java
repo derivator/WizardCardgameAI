@@ -6,9 +6,10 @@ import java.util.List;
 
 public abstract class Game implements GameState {
 
-    public final int minPlayers;
-    public final int maxPlayers;
-    
+    public final int MINPLAYERS;
+    public final int MAXPLAYERS;
+    public final int DECKSIZE;  
+     
     protected ArrayList<Player> players;
     protected List<Card> deck;
     protected ArrayList<Card> tableCards;
@@ -18,9 +19,10 @@ public abstract class Game implements GameState {
     protected int round = -1;
     protected boolean inProgress = false;
 
-    public Game(int minPlayers, int maxPlayers) {
-        this.minPlayers = minPlayers;
-        this.maxPlayers = maxPlayers;
+    public Game(int minPlayers, int maxPlayers, int deckSize) {
+        this.MINPLAYERS = minPlayers;
+        this.MAXPLAYERS = maxPlayers;
+        DECKSIZE = deckSize;
         tableCards = new ArrayList<>(maxPlayers);
         players = new ArrayList<>(maxPlayers);
     }
@@ -48,7 +50,7 @@ public abstract class Game implements GameState {
 
     public abstract void advance();
 
-    public void nextPlayer() {
+    protected void nextPlayer() {
         currentPlayer = getNextPlayer();
     }
 

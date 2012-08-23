@@ -4,27 +4,31 @@ import cardGame.Card;
 import cardGame.Game;
 import cardGame.Player;
 import cardGame.PlayerController;
+import cardGame.wizard.bot.gameTree.GameTree;
+import cardGame.wizard.bot.gameTree.State;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 public class WizardGame extends Game implements WizardState {
+    
+   private static GameTree test;
+
 
     public WizardGame() {
-        super(3,6);
+        super(3,6,60);
     }
-
 
     public enum RoundPhase {
         Bidding,
         Playing,}
-    protected RoundPhase roundPhase;
+    private RoundPhase roundPhase;
     
-    protected boolean unevenBids = true;
-    protected boolean waitingForCard = false;
-    protected int trickStarter;
-    protected int overUnderBid;
+    private boolean unevenBids = true;
+    private boolean waitingForCard = false;
+    private int trickStarter;
+    private int overUnderBid;
 
     public WizardPlayer getWizardPlayer(int player) {
         return (WizardPlayer) players.get(player);
@@ -44,7 +48,7 @@ public class WizardGame extends Game implements WizardState {
     @Override
     public void startRound() {
         round++;
-        if (round > 60 / players.size()) {
+        if (round > DECKSIZE / players.size()) {
             inProgress = false;
             return;
         }
@@ -64,12 +68,12 @@ public class WizardGame extends Game implements WizardState {
     }
 
     @Override
-    public void startTurn() {
+    protected  void startTurn() {
         getWizardPlayer(currentPlayer).move();
     }
 
     @Override
-    public void dealCards(int amount) {
+    protected void dealCards(int amount) {
         Iterator<Card> it = deck.iterator();
         for (Player p : players) {
             List<Card> dealtHand = new ArrayList<>();
@@ -84,7 +88,7 @@ public class WizardGame extends Game implements WizardState {
         }
     }
 
-    protected void setupDeck() {
+    private void setupDeck() {
         deck = new ArrayList<>();
         for (int s = 0; s < 4; s++) {
             for (int v = 0; v < 15; v++) {
@@ -156,14 +160,16 @@ public class WizardGame extends Game implements WizardState {
         if (waitingForCard) {
             startTurn();
         } else {
+            // trick is completed
             nextPlayer();
             if (currentPlayer == trickStarter) {
                 System.out.println(tableCards.toString());
                 List<Card> trick = Game.cloneCards(tableCards);
-                Collections.sort(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
-                trickStarter = tableCards.get(0).getOwner();
-                currentPlayer = tableCards.get(0).getOwner();
+                Card highestCard = Collections.min(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
+                trickStarter = highestCard.getOwner();
+                currentPlayer = highestCard.getOwner();          
                 getWizardPlayer(currentPlayer).addTrick();
+                System.out.println("Player " + getWizardPlayer(currentPlayer).getController().getName()+ " wins the trick with "+highestCard);
                 for (Player p : players) {
                     ((WizardPlayer)p).notifyTrickCompleted(trick, getWizardPlayer(currentPlayer));
                 }
@@ -214,18 +220,18 @@ public class WizardGame extends Game implements WizardState {
         return players.get(player).getScore();
     }
     @Override
-    public void playCard(Card card) {
+    public void playCard(Card c) {
         List<Card> hand = getWizardPlayer(currentPlayer).getHand();
-        if (hand.contains(card) && cardLegallyPlayable(card, hand)) {
-            Card c = (Card) card.clone();
+        if (cardLegallyPlayable(c, hand)) {
             c.setOwner(currentPlayer);
             tableCards.add(c);
-            hand.remove(card);
+            hand.remove(c);
             getWizardPlayer(currentPlayer).setHand(hand);
             waitingForCard = false;
             for (Player p : players) {
                 p.getController().notifyMove();
             }
+            System.out.println(getWizardPlayer(currentPlayer).getController().getName()+" plays " + c);
         } else {
             try {
                 throw new Exception("illegal card played!");
@@ -244,6 +250,7 @@ public class WizardGame extends Game implements WizardState {
         }
     }
 
+    @Override
     public int getTrumpSuit() {
         if (getTrumpIndicator() != null) {
             return getTrumpIndicator().getSuit();
@@ -271,6 +278,11 @@ public class WizardGame extends Game implements WizardState {
     }
 
     public static boolean cardLegallyPlayable(List<Card> tableCards, Card card, List<Card> hand) {
+        
+        if (! hand.contains(card)) {
+            return false;
+        }
+        
         if (card.getValue() == 0 || card.getValue() == 14) {
             return true;
         }
@@ -309,6 +321,7 @@ public class WizardGame extends Game implements WizardState {
         game.addPlayer(new WizardBot("Clide"));
         game.addPlayer(new WizardBot("Charles Darwin"));
         game.addPlayer(new WizardBot("MC Fallhin"));
+    
         if (false) {
             game.addPlayer(new WizardBot());
             game.addPlayer(new WizardBot());
@@ -319,10 +332,21 @@ public class WizardGame extends Game implements WizardState {
             while (game.isInProgress()) {
                 //wait for network/user input here?
                 game.advance();
+                /*
+                if (game.roundPhase == RoundPhase.Playing && game.players.get(0).getHand() != null) {
+                    ArrayList<Card>[] hands = new ArrayList[4];
+                    int k = 0;
+                    for (Player p : game.players) {
+                        hands[k] = (ArrayList) p.getHand();
+                        k++;
+                    }
+                    test = new GameTree(game, new State(0, 0, new int[game.getNumberOfPlayers()], game.tableCards , hands));
+                    test.expandNode(test.root, game.players.get(game.currentPlayer).getHand().get(0));
+                    
+                }
+                 */
             }
         }
-
-
         game.printScore();
 
     }

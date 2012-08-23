@@ -3,6 +3,8 @@ package cardGame.wizard;
 import cardGame.Card;
 import cardGame.Player;
 import cardGame.GameState;
+import cardGame.wizard.bot.gameTree.GameTree;
+import cardGame.wizard.bot.gameTree.State;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
