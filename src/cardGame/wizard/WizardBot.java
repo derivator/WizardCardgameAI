@@ -3,7 +3,7 @@ package cardGame.wizard;
 import cardGame.Card;
 import cardGame.Player;
 import cardGame.GameState;
-import cardGame.wizard.bot.mcts.GameTree;
+import cardGame.wizard.bot.mcts.UCT;
 import cardGame.wizard.bot.mcts.State;
 import java.util.Collections;
 import java.util.List;
