@@ -4,6 +4,7 @@ import cardGame.Card;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -29,7 +30,7 @@ public class Node {
      * @param action
      * @return 
      */
-    public Node expandNode(Card action) {
+    public Node expand(Card action) {
         if (children == null) {
             children = new ArrayList<>();
         }
@@ -37,14 +38,13 @@ public class Node {
         Node newNode = new Node(newState, this, action);
         children.add(newNode); 
         return newNode;
-    }
-    
-    
-    
+    } 
+
     public Node randomExpand() {
-            List<Card> playable = getState().getPlayableCards();
-            Collections.shuffle(playable);   
-            return expandNode(playable.get(0));    
+        ArrayList<Card> playable = state.getPlayableCards();
+        Random rand = new Random();
+        Card playCard = playable.get(rand.nextInt(playable.size()));
+        return expand(playCard);
     }
 
     public List<Node> getChildren() {

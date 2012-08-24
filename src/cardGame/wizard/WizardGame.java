@@ -195,21 +195,24 @@ public class WizardGame extends Game implements WizardState {
             startTurn();
         }
     }
+    
+    public static int calculateScore(int tricks, int bid) {
+        int score;
+        if (tricks == bid) {
+                score =  20 + 10 * tricks;
+            } else {
+                score =  - (10 * Math.abs(tricks - bid));
+            }
+        return score;
+    }
 
     private void doScore() {
         for (Player player : players) {
             WizardPlayer p = (WizardPlayer) player;
-            int newScore;
-            if (p.getTricks() == p.getCurrentBid()) {
-                newScore = p.getScore() + 20 + 10 * p.getTricks();
-            } else {
-                newScore = p.getScore() - (10 * Math.abs(p.getTricks() - p.getCurrentBid()));
-
-                overUnderBid += p.getTricks() - p.getCurrentBid();
-            }
+            int newScore = p.getScore() + calculateScore(p.getTricks(), p.getBid());
             p.setScore(newScore);
+            overUnderBid += p.getBid()- p.getTricks();
         }
-
     }
 
     @Override
@@ -323,7 +326,7 @@ public class WizardGame extends Game implements WizardState {
         game.addPlayer(new WizardBot("Clide"));
         game.addPlayer(new WizardBot("Charles Darwin"));
         game.addPlayer(new WizardBot("MC Fallhin"));
-    
+
         if (false) {
             game.addPlayer(new WizardBot());
             game.addPlayer(new WizardBot());
@@ -334,26 +337,6 @@ public class WizardGame extends Game implements WizardState {
             while (game.isInProgress()) {
                 //wait for network/user input here?
                 game.advance();
-                /*
-                if (game.roundPhase == RoundPhase.Playing && game.players.get(0).getHand() != null && game.round == 3) {
-                    ArrayList<Card>[] hands = new ArrayList[game.players.size()];
-                    int k = 0;
-                    for (Player p : game.players) {
-                        hands[k] = (ArrayList) p.getHand();
-                        k++;
-                    }
-                    test = new UCT(new State(game.currentPlayer, 1, new int[game.getNumberOfPlayers()], game.tableCards , hands));
-                    State.initialize(game);
-                    try {
-                        test.expand(10);
-                    } catch (Exception ex) {
-                        Logger.getLogger(WizardGame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                 
-                    
-                }
-              */
-               
             }
         }
         game.printScore();

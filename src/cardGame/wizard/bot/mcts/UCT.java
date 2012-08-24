@@ -17,9 +17,10 @@ public class UCT {
         State state = node.getState();
         while (!state.isFinalState()) {
             if (node.getChildren().size()<state.getPlayableCards().size()) {
-                // node not fully expanded, play first playable card
-                return node.expandNode(state.getPlayableCards().get(0));  
+                // node not fully expanded
+                return node.randomExpand();  
             } else {
+                // use selection policy
                 node = bestChild(node, exploitationParameter);
             }
         }
@@ -46,4 +47,17 @@ public class UCT {
         uctValue += c*Math.sqrt((2*Math.log(parent.getVisits()))/(child.getVisits()));
         return uctValue;
     }
+    
+    private int[] simulation(State state) {
+        double reward = 0;
+        State s = state;
+        while (!s.isFinalState()) {
+            s = s.makeRandomMove();
+        }
+        return s.evaluate();
+    }
+    
+    
+    
+    
 }

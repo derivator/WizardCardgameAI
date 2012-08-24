@@ -14,11 +14,11 @@ public class WizardPlayer extends Player {
         super(game, controller);
     }
 
-    public int getCurrentBid() {
+    public int getBid() {
         return bid;
     }
 
-    public void setCurrentBid(int currentBid) {
+    public void setBid(int currentBid) {
         this.bid = currentBid;
     }
 
