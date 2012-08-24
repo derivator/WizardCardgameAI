@@ -2,15 +2,16 @@ package cardGame.wizard;
 
 import cardGame.Card;
 import cardGame.Game;
-import cardGame.GameState;
 import cardGame.Player;
 import cardGame.PlayerController;
-import cardGame.wizard.bot.gameTree.GameTree;
-import cardGame.wizard.bot.gameTree.State;
+import cardGame.wizard.bot.mcts.GameTree;
+import cardGame.wizard.bot.mcts.State;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WizardGame extends Game implements WizardState {
     
@@ -333,7 +334,7 @@ public class WizardGame extends Game implements WizardState {
             while (game.isInProgress()) {
                 //wait for network/user input here?
                 game.advance();
-                /*
+                
                 if (game.roundPhase == RoundPhase.Playing && game.players.get(0).getHand() != null && game.round == 3) {
                     ArrayList<Card>[] hands = new ArrayList[game.players.size()];
                     int k = 0;
@@ -343,12 +344,16 @@ public class WizardGame extends Game implements WizardState {
                     }
                     test = new GameTree(new State(game.currentPlayer, 1, new int[game.getNumberOfPlayers()], game.tableCards , hands));
                     State.initialize(game);
-                    test.root.randomExpand();
+                    try {
+                        test.expand(10);
+                    } catch (Exception ex) {
+                        Logger.getLogger(WizardGame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     
                     
                 }
               
-                  */
+                  
             }
         }
         game.printScore();

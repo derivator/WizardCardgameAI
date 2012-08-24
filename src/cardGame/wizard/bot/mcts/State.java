@@ -1,15 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package cardGame.wizard.bot.gameTree;
+package cardGame.wizard.bot.mcts;
 
 import cardGame.Card;
 import cardGame.wizard.WizardComparator;
 import cardGame.wizard.WizardGame;
 import cardGame.wizard.WizardState;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 public class State {
 
@@ -19,7 +17,6 @@ public class State {
     private static int[] scores;
     private static int[] bids;
 
-    
     private int currentPlayer;
     private int currentTrick;
     private int[] playerTricks;
@@ -74,6 +71,7 @@ public class State {
         }
         return true;
     }
+    
 
     public static int getPlayers() {
         return players;
@@ -140,6 +138,31 @@ public class State {
         }
         trumpSuit = state.getTrumpSuit();
     }
-    
-    
+      
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final State other = (State) obj;
+        if (this.currentPlayer != other.currentPlayer) {
+            return false;
+        }
+        if (this.currentTrick != other.currentTrick) {
+            return false;
+        }
+        if (!Arrays.equals(this.playerTricks, other.playerTricks)) {
+            return false;
+        }
+        if (!Objects.equals(this.tableCards, other.tableCards)) {
+            return false;
+        }
+        if (!Arrays.deepEquals(this.playerHands, other.playerHands)) {
+            return false;
+        }
+        return true;
+    }
 }

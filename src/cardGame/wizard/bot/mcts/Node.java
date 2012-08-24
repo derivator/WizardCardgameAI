@@ -1,8 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package cardGame.wizard.bot.gameTree;
+package cardGame.wizard.bot.mcts;
 
 import cardGame.Card;
 import java.util.ArrayList;
@@ -33,17 +29,20 @@ public class Node {
         }
         State newState = state.makeMove(card);
         Node newNode = new Node(newState, this);
+        for (Node child : this.children) {
+            if (child.getState().equals(newState)) {
+                return null;
+            }
+        }
         children.add(newNode); 
         return newNode;
     }
     
     public void randomExpand() {
         Node node = this;
-        while (!node.getState().isFinalState()) {
             List<Card> playable = node.getState().getPlayableCards();
             Collections.shuffle(playable);   
-            node = node.expandNode(playable.get(0));
-        }
+            Node newNode = node.expandNode(playable.get(0));    
     }
 
     public List<Node> getChildren() {
