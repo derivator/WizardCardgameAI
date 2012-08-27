@@ -22,41 +22,51 @@ public class State {
     private ArrayList<Card> tableCards;
     private ArrayList<Card>[] playerHands;
 
-    public State(int currentPlayer, int currentTrick, int[] tricksByPlayer, ArrayList<Card> tableCards, ArrayList<Card>[] handsByPlayer) {
+    public State(int currentPlayer, int currentTrick, int[] playerTricks, ArrayList<Card> tableCards, ArrayList<Card>[] handsByPlayer) {
         this.currentPlayer = currentPlayer;
         this.currentTrick = currentTrick;
-        this.playerTricks = tricksByPlayer;
+        this.playerTricks = playerTricks;
         this.tableCards = tableCards;
         this.playerHands = handsByPlayer;
+    }
+    
+    public State (WizardState state) {
+        currentPlayer = state.getCurrentPlayer();
+        currentTrick = 0;
+        playerTricks = new int[state.getNumberOfPlayers()];
+        tableCards = (ArrayList<Card>) state.getTableCards();
+        playerHands = state.getHands();
+        initialize(state);
+        
     }
 
     public State makeMove(Card card) {
         ArrayList<Card> hand = playerHands[currentPlayer];
         ArrayList<Card>[] newPlayerHands = playerHands.clone();
-        ArrayList<Card> newHand;
+        ArrayList<Card> newHand = (ArrayList<Card>) hand.clone();
         ArrayList<Card> newTableCards = null;
         int newCurrentPlayer = currentPlayer;
         int newCurrentTrick = currentTrick;
         int[] newPlayerTricks = playerTricks.clone();
 
         if (WizardGame.cardLegallyPlayable(tableCards, card, hand)) {
-            newHand = (ArrayList<Card>) hand.clone();
             newHand.remove(card);
             newPlayerHands[currentPlayer] = newHand;
             newTableCards = (ArrayList<Card>) tableCards.clone();
             card.setOwner(currentPlayer);
             newTableCards.add(card);
             newCurrentPlayer = (currentPlayer + 1) % players;
+
+            if (newTableCards.size() == players) {
+                Card highestCard = Collections.min(tableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(tableCards)));
+                int trickWinner = highestCard.getOwner();
+                playerTricks[trickWinner]++;
+                newCurrentPlayer = trickWinner;
+                newTableCards = new ArrayList<>(players);
+                newCurrentTrick++;
+            }
         } else {
             throw new IllegalArgumentException("Illegal card played!");
-        }
-        if (newTableCards.size() == players) {
-            Card highestCard = Collections.min(tableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(tableCards)));
-            int trickWinner = highestCard.getOwner();
-            playerTricks[trickWinner]++;
-            newCurrentPlayer = trickWinner;
-            newTableCards = new ArrayList<>(players);
-            newCurrentTrick++;
         }
         return new State(newCurrentPlayer, newCurrentTrick, newPlayerTricks, newTableCards, newPlayerHands);
     }
@@ -65,6 +75,7 @@ public class State {
         ArrayList<Card> playable = getPlayableCards();
         Random rand = new Random();
         Card playCard = playable.get(rand.nextInt(playable.size()));
+      //  System.out.println(tableCards);
         return makeMove(playCard);
     }
     
@@ -73,8 +84,8 @@ public class State {
         for (Card c : playerHands[currentPlayer]) {
             if (cardLegallyPlayable(c)) {
                 playableCards.add(c);
-            }
-        }
+            }          
+        }   
         return playableCards;
     }
     public boolean isFinalState() {
@@ -94,8 +105,6 @@ public class State {
         }         
         return reward;
     }
-    
-
     
     public static void initialize(WizardState state) {
         players = state.getNumberOfPlayers();

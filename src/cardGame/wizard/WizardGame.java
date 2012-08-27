@@ -4,19 +4,13 @@ import cardGame.Card;
 import cardGame.Game;
 import cardGame.Player;
 import cardGame.PlayerController;
-import cardGame.wizard.bot.mcts.UCT;
-import cardGame.wizard.bot.mcts.State;
+import cardGame.wizard.bot.UCTBot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class WizardGame extends Game implements WizardState {
-    
-   private static UCT test;
-
 
     public WizardGame() {
         super(3,6,60);
@@ -78,16 +72,28 @@ public class WizardGame extends Game implements WizardState {
     protected void dealCards(int amount) {
         Iterator<Card> it = deck.iterator();
         for (Player p : players) {
-            List<Card> dealtHand = new ArrayList<>();
+            ArrayList<Card> dealtHand = new ArrayList<>();
             for (int i = 0; i < amount; i++) {
                 dealtHand.add(it.next());
                 it.remove();
             }
             p.setHand(dealtHand);
         }
+
         if (it.hasNext()) {
             System.out.println("Trump color is determined by: " + it.next().toString());
         }
+    }
+    
+    @Override
+    public ArrayList<Card>[] getHands() {
+        ArrayList<Card>[] hands = new ArrayList[players.size()]; // for cheating bots;
+        int i = 0;
+        for (Player p : players) {         
+            hands[i] = p.getHand();
+            i++;
+        }
+        return hands;
     }
 
     private void setupDeck() {
@@ -226,7 +232,7 @@ public class WizardGame extends Game implements WizardState {
     }
     @Override
     public void playCard(Card c) {
-        List<Card> hand = getWizardPlayer(currentPlayer).getHand();
+        ArrayList<Card> hand = getWizardPlayer(currentPlayer).getHand();
         if (cardLegallyPlayable(c, hand)) {
             c.setOwner(currentPlayer);
             tableCards.add(c);
@@ -283,6 +289,9 @@ public class WizardGame extends Game implements WizardState {
     }
 
     public static boolean cardLegallyPlayable(List<Card> tableCards, Card card, List<Card> hand) {
+        if (hand.isEmpty()) {
+            throw new IllegalArgumentException("Empty Hand");
+        }
         
         if (! hand.contains(card)) {
             return false;
@@ -325,16 +334,16 @@ public class WizardGame extends Game implements WizardState {
         game.addPlayer(new WizardBot("Burt"));
         game.addPlayer(new WizardBot("Clide"));
         game.addPlayer(new WizardBot("Charles Darwin"));
-        game.addPlayer(new WizardBot("MC Fallhin"));
+        game.addPlayer(new UCTBot("MC Fallhin"));
 
         if (false) {
             game.addPlayer(new WizardBot());
             game.addPlayer(new WizardBot());
 
         }
-        for (int i = 0; i < 100; i++) {
-            game.startGame();
-            while (game.isInProgress()) {
+        for (int i = 0; i < 1000; i++) {
+            game.startGame(5);
+            while (game.round<6) {
                 //wait for network/user input here?
                 game.advance();
             }

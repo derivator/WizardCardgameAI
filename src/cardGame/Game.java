@@ -49,6 +49,16 @@ public abstract class Game implements GameState {
     }
 
     public abstract void advance();
+    
+    public void startGame (int round) {
+        tableCards.trimToSize();
+        players.trimToSize();
+        inProgress = true;
+        currentPlayer = 0;
+        roundStarter = 0;
+        this.round = round-1;
+        startRound();
+    }
 
     protected void nextPlayer() {
         currentPlayer = getNextPlayer();

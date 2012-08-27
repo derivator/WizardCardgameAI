@@ -1,6 +1,8 @@
 package cardGame.wizard;
 
+import cardGame.Card;
 import cardGame.GameState;
+import java.util.ArrayList;
 
 public interface WizardState extends GameState {
 
@@ -15,8 +17,10 @@ public interface WizardState extends GameState {
     public int getScore(int player);
 
     public int getTotalBids();
-       
+
     public WizardCard getTrumpIndicator();
 
     public int getTrumpSuit();
+
+    public ArrayList<Card>[] getHands(); // for cheating bots
 }

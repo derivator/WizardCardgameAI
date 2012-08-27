@@ -24,6 +24,7 @@ public class Node {
     public Node(State state, Node Parent, Card action) {
         this.state = state;
         this.Parent = Parent;
+        this.action = action;
     }
     /**
      * May create duplicate Nodes
@@ -42,8 +43,9 @@ public class Node {
 
     public Node randomExpand() {
         ArrayList<Card> playable = state.getPlayableCards();
-        Random rand = new Random();
-        Card playCard = playable.get(rand.nextInt(playable.size()));
+        int size = playable.size();
+        Random rand = new Random();      
+        Card playCard = playable.get(rand.nextInt(playable.size()));      
         return expand(playCard);
     }
 
@@ -58,6 +60,11 @@ public class Node {
     public State getState() {
         return state;
     }
+
+    public Card getAction() {
+        return action;
+    }
+    
 
     public double getReward(int player) {
         return rewards[player];
@@ -75,6 +82,17 @@ public class Node {
         this.visits = visits;
     }
     
+    public void incrementVisits() {
+        visits++;
+    }
+    public void addRewards(int[] r) {
+        if (rewards==null) {
+            rewards = new double[State.getPlayers()];
+        }
+        for (int i=0; i<rewards.length; i++) {
+            rewards[i] += r[i];
+        }
+    }
     
 
 }

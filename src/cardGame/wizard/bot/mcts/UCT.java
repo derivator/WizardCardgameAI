@@ -1,60 +1,89 @@
 package cardGame.wizard.bot.mcts;
 
+import cardGame.Card;
 import java.util.Iterator;
 
 
 public class UCT {
     
     public Node root;
-    double exploitationParameter;
+    double exploitationParameter = 1/1.41;
 
     public UCT(State initialState) {   
         root = new Node(initialState, null, null);
 
     }
     
-    private Node treePolicy(Node node) {
-        State state = node.getState();
-        while (!state.isFinalState()) {
-            if (node.getChildren().size()<state.getPlayableCards().size()) {
-                // node not fully expanded
-                return node.randomExpand();  
-            } else {
-                // use selection policy
-                node = bestChild(node, exploitationParameter);
-            }
+    public static Card uctSearch(State initialState) {
+        Node root = new Node(initialState, null, null);
+        final long startTime = System.nanoTime();
+        
+        while ((System.nanoTime()-startTime)/100000000 < 1) {
+           Node selected = treePolicy(root, startTime);
+           int[] rewards = simulation(selected.getState());
+           backup(selected, rewards);
+           
         }
-        return node;
+        Card chosen = bestChild(root, 0).getAction();
+        System.out.println(chosen);
+        return chosen;
+        
     }
     
-    private Node bestChild(Node node, double exploitationParameter) {
+    private static Node treePolicy(Node node, double exploitationParameter) {
+        Node next = node;
+        State state = next.getState();
+        while (!state.isFinalState()) {
+            if (next.getChildren() == null ||next.getChildren().size()<state.getPlayableCards().size()) {
+                // node not fully expanded
+                return next.randomExpand();  
+            } else {
+                // use selection policy
+                next = bestChild(next, exploitationParameter);
+                state = next.getState();
+            }
+        }
+        return next;
+    }
+    
+    private static Node bestChild(Node node, double exploitationParameter) {
         Iterator<Node> it = node.getChildren().iterator();
         Node best = it.next();
         double bestUCTValue = uctValue(node, best, exploitationParameter);
         while (it.hasNext()) {
             Node next = it.next();
-            State state = next.getState();
             if (bestUCTValue < uctValue(node, next, exploitationParameter)) {
                 best = next;
             }    
         }
-        return best;
-        
+        return best;    
     }
     
-    private double uctValue(Node parent, Node child, double c) {
+    private static double uctValue(Node parent, Node child, double c) {
         double uctValue = child.getReward(child.getState().getCurrentPlayer())/child.getVisits();
         uctValue += c*Math.sqrt((2*Math.log(parent.getVisits()))/(child.getVisits()));
         return uctValue;
     }
     
-    private int[] simulation(State state) {
-        double reward = 0;
+    private static int[] simulation(State state) {
         State s = state;
         while (!s.isFinalState()) {
             s = s.makeRandomMove();
         }
         return s.evaluate();
+    }
+    /**
+     * Ascends the tree to backup the new values;
+     * @param node starting node
+     * @param rewards rewards to backup
+     */
+    private static void backup(Node node, int[] rewards) {
+        Node next = node;
+        while (next != null) {
+            next.incrementVisits();
+            next.addRewards(rewards);
+            next = next.getParent();
+        }
     }
     
     

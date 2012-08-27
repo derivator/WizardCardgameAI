@@ -1,6 +1,7 @@
 package cardGame;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public abstract class Player {
 
     protected final Game game;
     protected PlayerController controller;
-    private List<Card> hand;
+    private ArrayList<Card> hand;
     protected int score;
 
     protected Player(Game game, PlayerController controller) {
@@ -17,15 +18,15 @@ public abstract class Player {
         this.controller.assignGameState(game);
     }
 
-    public void setHand(List<Card> hand) {
+    public void setHand(ArrayList<Card> hand) {
         this.hand = hand;
         if (controller != null) {
             controller.notifyHand(getHandClone());
         }
     }
 
-    public List<Card> getHand() {
-        return getHandClone();
+    public ArrayList<Card> getHand() {
+        return (ArrayList) getHandClone();
     }
 
     public List<Card> getHandClone() {
