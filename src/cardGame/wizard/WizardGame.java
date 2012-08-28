@@ -341,9 +341,9 @@ public class WizardGame extends Game implements WizardState {
             game.addPlayer(new WizardBot());
 
         }
-        for (int i = 0; i < 1000; i++) {
-            game.startGame(5);
-            while (game.round<6) {
+        for (int i = 0; i < 10; i++) {
+            game.startGame(3);
+            while (game.round<4) {
                 //wait for network/user input here?
                 game.advance();
             }

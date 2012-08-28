@@ -1,12 +1,11 @@
 package cardGame.wizard.bot;
 
-import cardGame.wizard.*;
 import cardGame.Card;
-import cardGame.Player;
 import cardGame.GameState;
-import cardGame.wizard.bot.mcts.UCT;
-import cardGame.wizard.bot.mcts.State;
-import java.util.Collections;
+import cardGame.Player;
+import cardGame.wizard.*;
+import cardGame.wizard.bot.uct.State;
+import cardGame.wizard.bot.uct.UCT;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +34,7 @@ public class UCTBot implements WizardController {
     @Override
     public void move() {
         State initialState = new State(gameState);
-        gameState.playCard(UCT.uctSearch(initialState));
+        gameState.playCard(UCT.uctSearch(initialState).getCard());
 
     }
 
@@ -44,22 +43,8 @@ public class UCTBot implements WizardController {
 
     @Override
     public void bid() {
-        int trumpsuit = -128;
-        trumpsuit = gameState.getTrumpSuit();
-
-        int bid = 0;
-        for (Card card : hand) {
-            if ((card.getSuit() == trumpsuit && card.getValue() > 6) || card.getValue() == 14 || card.getValue() > 10) {
-                bid++;
-            }
-        }
-
-        if (gameState.getTotalBids() + bid == gameState.getRound() && gameState.unevenBidsEnforced() && gameState.getNextPlayer() == gameState.getRoundStarter()) {
-            bid++;
-        }
-
-        myBid = bid;
-        gameState.doBid(bid);
+        State initialState = new State(gameState);
+        gameState.doBid(UCT.uctSearch(initialState).getBid());
     }
 
     @Override

@@ -11,12 +11,12 @@ public interface WizardState extends GameState {
     public boolean unevenBidsEnforced();
 
     public int getBid(int player);
+    
+    public int getTotalBids();
 
     public int getTricks(int player);
 
     public int getScore(int player);
-
-    public int getTotalBids();
 
     public WizardCard getTrumpIndicator();
 

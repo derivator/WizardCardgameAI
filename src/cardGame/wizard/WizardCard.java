@@ -3,9 +3,11 @@ package cardGame.wizard;
 import cardGame.Card;
 
 public class WizardCard extends Card {
-	public final static String suits = "GYRB";
-	WizardCard(int suit, int value){
-		super(suit, value);
+
+    public final static String suits = "GYRB";
+
+    public WizardCard(int suit, int value) {
+        super(suit, value);
     }
 
     public String toString() {

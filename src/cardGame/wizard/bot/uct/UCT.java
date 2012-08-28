@@ -1,4 +1,4 @@
-package cardGame.wizard.bot.mcts;
+package cardGame.wizard.bot.uct;
 
 import cardGame.Card;
 import java.util.Iterator;
@@ -14,17 +14,17 @@ public class UCT {
 
     }
     
-    public static Card uctSearch(State initialState) {
+    public static Move uctSearch(State initialState) {
         Node root = new Node(initialState, null, null);
         final long startTime = System.nanoTime();
         
-        while ((System.nanoTime()-startTime)/100000000 < 1) {
+        while ((System.nanoTime()-startTime) < 10000000000l) {
            Node selected = treePolicy(root, startTime);
            int[] rewards = simulation(selected.getState());
            backup(selected, rewards);
            
         }
-        Card chosen = bestChild(root, 0).getAction();
+        Move chosen = bestChild(root, 0).getMove();
         System.out.println(chosen);
         return chosen;
         
@@ -34,7 +34,7 @@ public class UCT {
         Node next = node;
         State state = next.getState();
         while (!state.isFinalState()) {
-            if (next.getChildren() == null ||next.getChildren().size()<state.getPlayableCards().size()) {
+            if (next.getChildren() == null ||next.getChildren().size()<state.getPossibleMoves().size()) {
                 // node not fully expanded
                 return next.randomExpand();  
             } else {

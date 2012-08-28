@@ -1,4 +1,4 @@
-package cardGame.wizard.bot.mcts;
+package cardGame.wizard.bot.uct;
 
 import cardGame.Card;
 import java.util.ArrayList;
@@ -14,39 +14,38 @@ public class Node {
 
     private State state;
     // TODO : action might not be handled correctly
-    private Card action; // action that led to this state/node;
+    private Move move; // action that led to this state/node;
     private Node Parent;
     List<Node> children;
     // for UCT:
     private int visits = 0;
     private double[] rewards;
 
-    public Node(State state, Node Parent, Card action) {
+    public Node(State state, Node Parent, Move move) {
         this.state = state;
         this.Parent = Parent;
-        this.action = action;
+        this.move = move;
     }
     /**
      * May create duplicate Nodes
-     * @param action
+     * @param move
      * @return 
      */
-    public Node expand(Card action) {
+    public Node expand(Move move) {
         if (children == null) {
             children = new ArrayList<>();
         }
-        State newState = state.makeMove(action);
-        Node newNode = new Node(newState, this, action);
+        State newState = state.makeMove(move);
+        Node newNode = new Node(newState, this, move);
         children.add(newNode); 
         return newNode;
     } 
 
     public Node randomExpand() {
-        ArrayList<Card> playable = state.getPlayableCards();
-        int size = playable.size();
+        ArrayList<Move> playable = state.getPossibleMoves();
         Random rand = new Random();      
-        Card playCard = playable.get(rand.nextInt(playable.size()));      
-        return expand(playCard);
+        Move move = playable.get(rand.nextInt(playable.size()));      
+        return expand(move);
     }
 
     public List<Node> getChildren() {
@@ -61,8 +60,8 @@ public class Node {
         return state;
     }
 
-    public Card getAction() {
-        return action;
+    public Move getMove() {
+        return move;
     }
     
 
