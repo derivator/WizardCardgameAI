@@ -1,6 +1,5 @@
 package cardGame.wizard.bot.uct;
 
-import cardGame.Card;
 import java.util.Iterator;
 
 
@@ -18,14 +17,17 @@ public class UCT {
         Node root = new Node(initialState, null, null);
         final long startTime = System.nanoTime();
         
-        while ((System.nanoTime()-startTime) < 10000000000l) {
-           Node selected = treePolicy(root, startTime);
+     //   while ((System.nanoTime()-startTime) < 1000000000) {
+        while ((root.getVisits()) < 100000) {
+           Node selected = treePolicy(root, 10000);
            int[] rewards = simulation(selected.getState());
            backup(selected, rewards);
            
         }
         Move chosen = bestChild(root, 0).getMove();
-        System.out.println(chosen);
+        for (Node child : root.getChildren()) {
+            System.out.println(child.getMove()+  "  : " + child.getReward(root.getState().getCurrentPlayer()));
+        }
         return chosen;
         
     }
@@ -53,14 +55,15 @@ public class UCT {
         while (it.hasNext()) {
             Node next = it.next();
             if (bestUCTValue < uctValue(node, next, exploitationParameter)) {
-                best = next;
+                bestUCTValue = uctValue(node, next, exploitationParameter);
+                best = next;             
             }    
         }
         return best;    
     }
     
     private static double uctValue(Node parent, Node child, double c) {
-        double uctValue = child.getReward(child.getState().getCurrentPlayer())/child.getVisits();
+        double uctValue = child.getReward(parent.getState().getCurrentPlayer())/child.getVisits();
         uctValue += c*Math.sqrt((2*Math.log(parent.getVisits()))/(child.getVisits()));
         return uctValue;
     }

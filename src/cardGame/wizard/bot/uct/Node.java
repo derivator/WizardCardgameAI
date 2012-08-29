@@ -19,7 +19,7 @@ public class Node {
     List<Node> children;
     // for UCT:
     private int visits = 0;
-    private double[] rewards;
+    private int[] rewards;
 
     public Node(State state, Node Parent, Move move) {
         this.state = state;
@@ -43,9 +43,21 @@ public class Node {
 
     public Node randomExpand() {
         ArrayList<Move> playable = state.getPossibleMoves();
-        Random rand = new Random();      
-        Move move = playable.get(rand.nextInt(playable.size()));      
-        return expand(move);
+        ArrayList<Move> exclude = new ArrayList<>();
+        if (getChildren() != null) {
+            for (Node child : getChildren()) {
+                for (Move m : playable) {
+                    if (child.getMove().equals(m)) {
+                        exclude.add(m);
+                    }
+                }
+            }
+            playable.removeAll(exclude);
+        }
+        
+        Random rand = new Random();
+        Move randomMove = playable.get(rand.nextInt(playable.size()));
+        return expand(randomMove);
     }
 
     public List<Node> getChildren() {
@@ -65,7 +77,7 @@ public class Node {
     }
     
 
-    public double getReward(int player) {
+    public int getReward(int player) {
         return rewards[player];
     }
 
@@ -86,7 +98,7 @@ public class Node {
     }
     public void addRewards(int[] r) {
         if (rewards==null) {
-            rewards = new double[State.getPlayers()];
+            rewards = new int[State.getPlayers()];
         }
         for (int i=0; i<rewards.length; i++) {
             rewards[i] += r[i];

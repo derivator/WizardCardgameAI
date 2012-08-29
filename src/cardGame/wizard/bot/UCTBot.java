@@ -38,9 +38,6 @@ public class UCTBot implements WizardController {
 
     }
 
-    private void playLowCard(boolean trickDesired) {
-    }
-
     @Override
     public void bid() {
         State initialState = new State(gameState);

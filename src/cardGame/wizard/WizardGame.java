@@ -78,6 +78,7 @@ public class WizardGame extends Game implements WizardState {
                 it.remove();
             }
             p.setHand(dealtHand);
+            System.out.println(p.getController().getName()+": "+p.getHand());
         }
 
         if (it.hasNext()) {
@@ -118,9 +119,7 @@ public class WizardGame extends Game implements WizardState {
 
     @Override
     public void doBid(int bid) {
-        if (unevenBids && getNextPlayer() == roundStarter && getTotalBids() + bid == round) {
-
-            bid += 2;
+        if (unevenBids && getNextPlayer() == roundStarter && getTotalBids() + bid == round || bid < 0) {
             try {
                 throw new Exception("incorrect bid");
             } catch (Exception e) {
@@ -128,6 +127,7 @@ public class WizardGame extends Game implements WizardState {
             }
         }
         getWizardPlayer(currentPlayer).bid = bid;
+        System.out.println(getWizardPlayer(currentPlayer).getController().getName()+" bids " + bid);
     }
 
     public int getTotalBids() {
@@ -342,8 +342,8 @@ public class WizardGame extends Game implements WizardState {
 
         }
         for (int i = 0; i < 10; i++) {
-            game.startGame(3);
-            while (game.round<4) {
+            game.startGame(5);
+            while (game.round<6) {
                 //wait for network/user input here?
                 game.advance();
             }

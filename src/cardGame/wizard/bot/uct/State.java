@@ -54,7 +54,6 @@ public class State {
         ArrayList<Move> playable = getPossibleMoves();
         Random rand = new Random();
         Move playCard = playable.get(rand.nextInt(playable.size()));
-        //  System.out.println(tableCards);
         return makeMove(playCard);
     }
 
@@ -89,8 +88,10 @@ public class State {
 
     private State makeMove(int bid) {
         if (bids[currentPlayer] == -1) {
-            bids[currentPlayer] = bid;
-            return new State(this.currentPlayer, this.playerTricks, this.tableCards, this.playerHands, this.bids);
+            int[] newBids = bids.clone();
+            newBids[currentPlayer] = bid;
+            int newCurrentPlayer = (currentPlayer + 1) % players;
+            return new State(newCurrentPlayer, this.playerTricks, this.tableCards, this.playerHands, newBids);
         }
         throw new IllegalArgumentException("Cannot bid");
     }
@@ -98,7 +99,7 @@ public class State {
     public ArrayList<Move> getPossibleMoves() {
         ArrayList<Move> moves = new ArrayList();
         if (bids[currentPlayer] == -1) {
-            for (int i=0; i<round; i++) {
+            for (int i=0; i<=round; i++) {
                 if (! (currentPlayer == roundStarter && getTotalBids() +i == round)) {
                     moves.add(new Move(i));
                 }
@@ -106,6 +107,7 @@ public class State {
         } else {
             return getPlayableCards();
         }
+        boolean isEmptY = moves.isEmpty();
         return moves;
     }
     
