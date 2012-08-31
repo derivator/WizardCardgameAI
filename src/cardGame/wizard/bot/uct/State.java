@@ -74,7 +74,7 @@ public class State {
             newCurrentPlayer = (currentPlayer + 1) % players;
 
             if (newTableCards.size() == players) {
-                Card highestCard = Collections.min(tableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(tableCards)));
+                Card highestCard = Collections.min(newTableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(newTableCards)));
                 int trickWinner = highestCard.getOwner();
                 newPlayerTricks[trickWinner]++;
                 newCurrentPlayer = trickWinner;

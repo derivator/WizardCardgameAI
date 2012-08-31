@@ -342,9 +342,10 @@ public class WizardGame extends Game implements WizardState {
 
         }
     //    while (game.getWizardPlayer(3).getScore()>=0) {
-        for (int i = 0; i < 1; i++) {
-            game.startGame(2);
-            while (game.round<3) {
+        for (int i = 0; i < 100; i++) {
+            game.startGame(12);
+            System.out.println(game.players.get(0));
+            while (game.round<13) {           
                 //wait for network/user input here?
                 game.advance();
             }
