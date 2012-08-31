@@ -76,7 +76,7 @@ public class State {
             if (newTableCards.size() == players) {
                 Card highestCard = Collections.min(tableCards, new WizardComparator(trumpSuit, WizardGame.getFollowSuit(tableCards)));
                 int trickWinner = highestCard.getOwner();
-                playerTricks[trickWinner]++;
+                newPlayerTricks[trickWinner]++;
                 newCurrentPlayer = trickWinner;
                 newTableCards = new ArrayList<>(players);
             }
@@ -91,7 +91,9 @@ public class State {
             int[] newBids = bids.clone();
             newBids[currentPlayer] = bid;
             int newCurrentPlayer = (currentPlayer + 1) % players;
-            return new State(newCurrentPlayer, this.playerTricks, this.tableCards, this.playerHands, newBids);
+            ArrayList<Card> newTableCards = (ArrayList<Card>) this.tableCards.clone();
+            ArrayList<Card>[] newPlayerHands = (ArrayList<Card>[]) this.playerHands.clone();
+            return new State(newCurrentPlayer, this.playerTricks.clone(), newTableCards, newPlayerHands, newBids);
         }
         throw new IllegalArgumentException("Cannot bid");
     }
@@ -107,7 +109,6 @@ public class State {
         } else {
             return getPlayableCards();
         }
-        boolean isEmptY = moves.isEmpty();
         return moves;
     }
     
@@ -132,11 +133,13 @@ public class State {
     }
     
     public int[] evaluate(){
+        if (isFinalState()) {
         int[] reward = new int[players];
         for (int i=0; i<players; i++) {
             reward[i] = WizardGame.calculateScore(playerTricks[i], bids[i]);
         }         
-        return reward;
+        return reward; }
+        throw new UnsupportedOperationException("Cannot evaluate non terminal state!");
     }
     
     public static void initialize(WizardState state) {

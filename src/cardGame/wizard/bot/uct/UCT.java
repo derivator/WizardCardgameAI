@@ -18,15 +18,15 @@ public class UCT {
         final long startTime = System.nanoTime();
         
      //   while ((System.nanoTime()-startTime) < 1000000000) {
-        while ((root.getVisits()) < 100000) {
-           Node selected = treePolicy(root, 10000);
+        while ((root.getVisits()) < 10000) {
+           Node selected = treePolicy(root, 100);
            int[] rewards = simulation(selected.getState());
            backup(selected, rewards);
            
         }
         Move chosen = bestChild(root, 0).getMove();
         for (Node child : root.getChildren()) {
-            System.out.println(child.getMove()+  "  : " + child.getReward(root.getState().getCurrentPlayer()));
+            System.out.println("Move "+child.getMove()+  " - Reward: " + child.getReward(root.getState().getCurrentPlayer())+", visits: " +child.getVisits());
         }
         return chosen;
         
