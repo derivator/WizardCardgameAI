@@ -21,7 +21,7 @@ public class WizardGame extends Game implements WizardState {
         Playing,}
     private RoundPhase roundPhase;
     
-    private boolean unevenBids = true;
+    private boolean unevenBids = false;
     private boolean waitingForCard = false;
     private int trickStarter;
     private int overUnderBid;
@@ -331,10 +331,10 @@ public class WizardGame extends Game implements WizardState {
     @SuppressWarnings("unused")
     public static void main(String[] args) {
         WizardGame game = new WizardGame();
-        game.addPlayer(new WizardBot("Burt"));
-        game.addPlayer(new WizardBot("Clide"));
-        game.addPlayer(new WizardBot("Charles Darwin"));
-        game.addPlayer(new UCTBot("MC Fallhin"));
+        game.addPlayer(new UCTBot("Burt",76));
+        game.addPlayer(new UCTBot("Clide",76));
+      //  game.addPlayer(new WizardBot("Charles Darwin"));
+        game.addPlayer(new UCTBot("MC Fallhin",76));
 
         if (false) {
             game.addPlayer(new WizardBot());
@@ -342,10 +342,9 @@ public class WizardGame extends Game implements WizardState {
 
         }
     //    while (game.getWizardPlayer(3).getScore()>=0) {
-        for (int i = 0; i < 100; i++) {
-            game.startGame(12);
-            System.out.println(game.players.get(0));
-            while (game.round<13) {           
+        for (int i = 0; i < 1; i++) {
+            game.startGame(10);
+            while (game.round<11) {           
                 //wait for network/user input here?
                 game.advance();
             }

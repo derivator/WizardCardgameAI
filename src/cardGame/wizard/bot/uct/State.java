@@ -14,6 +14,7 @@ public class State {
     private static int round;
     private static int roundStarter;
     private static int trumpSuit;
+    private static boolean unevenBids;
     private static int[] scores;
     
     private int[] bids;
@@ -102,7 +103,7 @@ public class State {
         ArrayList<Move> moves = new ArrayList();
         if (bids[currentPlayer] == -1) {
             for (int i=0; i<=round; i++) {
-                if (! (currentPlayer == roundStarter && getTotalBids() +i == round)) {
+                if (! (unevenBids && currentPlayer == roundStarter && getTotalBids() +i == round)) {
                     moves.add(new Move(i));
                 }
             }
@@ -147,6 +148,7 @@ public class State {
         round = state.getRound();
         scores = new int[players];
         trumpSuit = state.getTrumpSuit();
+        unevenBids = state.unevenBidsEnforced();
     }
 
     public int getTotalBids() {

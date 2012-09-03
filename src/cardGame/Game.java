@@ -1,6 +1,8 @@
 package cardGame;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -45,6 +47,7 @@ public abstract class Game implements GameState {
         currentPlayer = 0;
         roundStarter = 0;
         round = 0;
+        Collections.shuffle(players);
         startRound();
     }
 
@@ -57,6 +60,7 @@ public abstract class Game implements GameState {
         currentPlayer = 0;
         roundStarter = 0;
         this.round = round-1;
+        Collections.shuffle(players);
         startRound();
     }
 

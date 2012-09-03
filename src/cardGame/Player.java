@@ -26,7 +26,7 @@ public abstract class Player {
     }
 
     public ArrayList<Card> getHand() {
-        return (ArrayList) getHandClone();
+        return  hand;
     }
 
     public List<Card> getHandClone() {

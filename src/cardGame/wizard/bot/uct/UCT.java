@@ -1,32 +1,23 @@
 package cardGame.wizard.bot.uct;
 
 import java.util.Iterator;
+import java.util.Random;
 
 
 public class UCT {
     
-    public Node root;
-    double exploitationParameter = 1/1.41;
-
-    public UCT(State initialState) {   
-        root = new Node(initialState, null, null);
-
-    }
-    
-    public static Move uctSearch(State initialState) {
+    public static Move uctSearch(State initialState, double exploitationParameter) {
         Node root = new Node(initialState, null, null);
         final long startTime = System.nanoTime();
         
-     //   while ((System.nanoTime()-startTime) < 1000000000) {
-        while ((root.getVisits()) < 10000) {
-           Node selected = treePolicy(root, 100);
+        while ((root.getVisits()) < 50000) {
+           Node selected = treePolicy(root, exploitationParameter);
            int[] rewards = simulation(selected.getState());
-           backup(selected, rewards);
-           
+           backup(selected, rewards);        
         }
         Move chosen = bestChild(root, 0).getMove();
         for (Node child : root.getChildren()) {
-            System.out.println("Move "+child.getMove()+  " - Reward: " + child.getReward(root.getState().getCurrentPlayer())+", visits: " +child.getVisits());
+            System.out.println("Move "+child.getMove()+  " - Reward: " + child.getReward(root.getState().getCurrentPlayer())+", visits: " +child.getVisits());        
         }
         return chosen;
         
@@ -36,7 +27,7 @@ public class UCT {
         Node next = node;
         State state = next.getState();
         while (!state.isFinalState()) {
-            if (next.getChildren() == null ||next.getChildren().size()<state.getPossibleMoves().size()) {
+            if (next.getChildren() == null || next.getChildren().size()<state.getPossibleMoves().size()) {
                 // node not fully expanded
                 return next.randomExpand();  
             } else {
@@ -56,8 +47,16 @@ public class UCT {
             Node next = it.next();
             if (bestUCTValue < uctValue(node, next, exploitationParameter)) {
                 bestUCTValue = uctValue(node, next, exploitationParameter);
-                best = next;             
-            }    
+                best = next;
+                
+            } else if (Math.abs(bestUCTValue - uctValue(node, next, exploitationParameter)) < 0.1) {
+                // brake ties;
+                Random rand = new Random();
+                if (rand.nextBoolean()) {
+                    bestUCTValue = uctValue(node, next, exploitationParameter);
+                    best = next;
+                }
+            }
         }
         return best;    
     }
@@ -71,7 +70,7 @@ public class UCT {
     private static int[] simulation(State state) {
         State s = state;
         while (!s.isFinalState()) {
-            s = s.makeRandomMove();
+            s = s.makeRandomMove();         
         }
         return s.evaluate();
     }
