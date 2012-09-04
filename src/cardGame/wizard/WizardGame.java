@@ -6,9 +6,12 @@ import cardGame.Player;
 import cardGame.PlayerController;
 import cardGame.wizard.bot.UCTBot;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class WizardGame extends Game implements WizardState {
 
@@ -59,7 +62,7 @@ public class WizardGame extends Game implements WizardState {
         roundPhase = RoundPhase.Bidding;
         for (Player player : players) {
             ((WizardPlayer) player).resetTricks();
-            ((WizardPlayer) player).bid = -1;
+            ((WizardPlayer) player).setBid(-1);
         }
     }
 
@@ -72,7 +75,7 @@ public class WizardGame extends Game implements WizardState {
     protected void dealCards(int amount) {
         Iterator<Card> it = deck.iterator();
         for (Player p : players) {
-            ArrayList<Card> dealtHand = new ArrayList<>();
+            HashSet<Card> dealtHand = new HashSet<>(round);
             for (int i = 0; i < amount; i++) {
                 dealtHand.add(it.next());
                 it.remove();
@@ -87,8 +90,8 @@ public class WizardGame extends Game implements WizardState {
     }
     
     @Override
-    public ArrayList<Card>[] getHands() {
-        ArrayList<Card>[] hands = new ArrayList[players.size()]; // for cheating bots;
+    public HashSet<Card>[] getHands() {
+        HashSet<Card>[] hands = new HashSet[players.size()]; // for cheating bots;
         int i = 0;
         for (Player p : players) {         
             hands[i] = p.getHand();
@@ -109,7 +112,7 @@ public class WizardGame extends Game implements WizardState {
 
     @Override
     public int getBid(int player) {
-        return getWizardPlayer(player).bid;
+        return getWizardPlayer(player).getBid();
     }
 
     @Override
@@ -126,7 +129,7 @@ public class WizardGame extends Game implements WizardState {
                 e.printStackTrace();
             }
         }
-        getWizardPlayer(currentPlayer).bid = bid;
+        getWizardPlayer(currentPlayer).setBid(bid);
         System.out.println(getWizardPlayer(currentPlayer).getController().getName()+" bids " + bid);
     }
 
@@ -172,7 +175,7 @@ public class WizardGame extends Game implements WizardState {
             nextPlayer();
             if (currentPlayer == trickStarter) {
                 System.out.println(tableCards.toString());
-                List<Card> trick = Game.cloneCards(tableCards);
+                List<Card> trick = (List) Game.cloneCards(tableCards);
                 Card highestCard = Collections.min(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
                 trickStarter = highestCard.getOwner();
                 currentPlayer = highestCard.getOwner();          
@@ -232,7 +235,7 @@ public class WizardGame extends Game implements WizardState {
     }
     @Override
     public void playCard(Card c) {
-        ArrayList<Card> hand = getWizardPlayer(currentPlayer).getHand();
+        HashSet<Card> hand = getWizardPlayer(currentPlayer).getHand();
         if (cardLegallyPlayable(c, hand)) {
             c.setOwner(currentPlayer);
             tableCards.add(c);
@@ -269,7 +272,7 @@ public class WizardGame extends Game implements WizardState {
         return -128;
     }
 
-    public static int getFollowSuit(List<Card> table) {
+    public static int getFollowSuit(Collection<Card> table) {
         int followSuit = -128;
         for (Card c : table) {
             if (c.getValue() != 0) {
@@ -284,11 +287,11 @@ public class WizardGame extends Game implements WizardState {
     }
     
     @Override
-    public boolean cardLegallyPlayable(Card card, List<Card> hand) {
+    public boolean cardLegallyPlayable(Card card, Collection<Card> hand) {
         return cardLegallyPlayable(tableCards, card, hand);
     }
 
-    public static boolean cardLegallyPlayable(List<Card> tableCards, Card card, List<Card> hand) {
+    public static boolean cardLegallyPlayable(Collection<Card> tableCards, Card card, Collection<Card> hand) {
         if (hand.isEmpty()) {
             throw new IllegalArgumentException("Empty Hand");
         }
@@ -343,8 +346,8 @@ public class WizardGame extends Game implements WizardState {
         }
     //    while (game.getWizardPlayer(3).getScore()>=0) {
         for (int i = 0; i < 1; i++) {
-            game.startGame(10);
-            while (game.round<11) {           
+            game.startGame(3);
+            while (game.round<4) {           
                 //wait for network/user input here?
                 game.advance();
             }

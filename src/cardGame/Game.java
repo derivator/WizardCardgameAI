@@ -3,6 +3,7 @@ package cardGame;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -13,7 +14,7 @@ public abstract class Game implements GameState {
     public final int DECKSIZE;  
      
     protected ArrayList<Player> players;
-    protected List<Card> deck;
+    protected ArrayList<Card> deck;
     protected ArrayList<Card> tableCards;
     
     protected int currentPlayer = -1;
@@ -96,18 +97,30 @@ public abstract class Game implements GameState {
 
     @Override
     public List<Card> getTableCards() {
-        return Game.cloneCards(tableCards);
+        return (List) Game.cloneCards(tableCards);
     }
 
-    public static List<Card> cloneCards(List<Card> list) {
+    public static ArrayList<Card> cloneCards(Collection<Card> list) {
         if (list == null) {
             return null;
         }
         
-        List<Card> copy = new ArrayList<>();
+        ArrayList<Card> copy = new ArrayList<>();
         for (Card card : list) {
             copy.add((Card) card.clone());
         }
         return copy;
     }
+    public static HashSet<Card> cloneHand(HashSet<Card> hand) {
+            if (hand == null) {
+            return null;
+        }
+        
+        HashSet<Card> copy = new HashSet<>();
+        for (Card card : hand) {
+            copy.add((Card) card.clone());
+        }
+        return copy;
+    }    
+    
 }

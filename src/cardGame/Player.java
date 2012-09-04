@@ -1,15 +1,15 @@
 package cardGame;
 
-
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Player {
 
     protected final Game game;
     protected PlayerController controller;
-    private ArrayList<Card> hand;
+    private HashSet<Card> hand;
     protected int score;
 
     protected Player(Game game, PlayerController controller) {
@@ -18,19 +18,19 @@ public abstract class Player {
         this.controller.assignGameState(game);
     }
 
-    public void setHand(ArrayList<Card> hand) {
+    public void setHand(HashSet<Card> hand) {
         this.hand = hand;
         if (controller != null) {
             controller.notifyHand(getHandClone());
         }
     }
 
-    public ArrayList<Card> getHand() {
+    public HashSet<Card> getHand() {
         return  hand;
     }
 
-    public List<Card> getHandClone() {
-        return Game.cloneCards(hand);
+    public HashSet<Card> getHandClone() {
+        return  (HashSet) Game.cloneHand(hand);
     }
 
     public PlayerController getController() {

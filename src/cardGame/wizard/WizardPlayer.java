@@ -7,8 +7,8 @@ import java.util.List;
 
 public class WizardPlayer extends Player {
 
-    protected int bid;
-    protected int tricks;
+    private int bid;
+    private int tricks;
 
     public WizardPlayer(Game game, WizardController controller) {
         super(game, controller);

@@ -2,7 +2,7 @@ package cardGame.wizard;
 
 import cardGame.Card;
 import cardGame.GameState;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public interface WizardState extends GameState {
 
@@ -22,5 +22,5 @@ public interface WizardState extends GameState {
 
     public int getTrumpSuit();
 
-    public ArrayList<Card>[] getHands(); // for cheating bots
+    public HashSet<Card>[] getHands(); // for cheating bots
 }

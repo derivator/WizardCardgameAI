@@ -13,8 +13,7 @@ import java.util.Random;
 public class Node {
 
     private State state;
-    // TODO : action might not be handled correctly
-    private Move move; // action that led to this state/node;
+    private Move move; // move that led to this state/node;
     private Node Parent;
     List<Node> children;
     // for UCT:
@@ -33,7 +32,7 @@ public class Node {
      */
     public Node expand(Move move) {
         if (children == null) {
-            children = new ArrayList<>();
+            children = new ArrayList<>(5);
         }
         State newState = state.makeMove(move);
         Node newNode = new Node(newState, this, move);
@@ -105,5 +104,4 @@ public class Node {
         }
     }
     
-
 }

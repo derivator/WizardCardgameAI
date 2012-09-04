@@ -6,6 +6,7 @@ import cardGame.wizard.WizardGame;
 import cardGame.wizard.WizardState;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
 
 public class State {
@@ -21,9 +22,9 @@ public class State {
     private int currentPlayer;
     private int[] playerTricks;
     private ArrayList<Card> tableCards;
-    private ArrayList<Card>[] playerHands;
+    private HashSet<Card>[] playerHands;
 
-    public State(int currentPlayer, int[] playerTricks, ArrayList<Card> tableCards, ArrayList<Card>[] handsByPlayer, int[] bids) {
+    public State(int currentPlayer, int[] playerTricks, ArrayList<Card> tableCards, HashSet<Card>[] handsByPlayer, int[] bids) {
         this.currentPlayer = currentPlayer;
         this.playerTricks = playerTricks;
         this.tableCards = tableCards;
@@ -59,9 +60,9 @@ public class State {
     }
 
     private State makeMove(Card card) {
-        ArrayList<Card> hand = playerHands[currentPlayer];
-        ArrayList<Card>[] newPlayerHands = playerHands.clone();
-        ArrayList<Card> newHand = (ArrayList<Card>) hand.clone();
+        HashSet<Card> hand = playerHands[currentPlayer];
+        HashSet<Card>[] newPlayerHands = playerHands.clone();
+        HashSet<Card> newHand = (HashSet<Card>) hand.clone();
         ArrayList<Card> newTableCards = null;
         int newCurrentPlayer = currentPlayer;
         int[] newPlayerTricks = playerTricks.clone();
@@ -93,7 +94,7 @@ public class State {
             newBids[currentPlayer] = bid;
             int newCurrentPlayer = (currentPlayer + 1) % players;
             ArrayList<Card> newTableCards = (ArrayList<Card>) this.tableCards.clone();
-            ArrayList<Card>[] newPlayerHands = (ArrayList<Card>[]) this.playerHands.clone();
+            HashSet<Card>[] newPlayerHands = (HashSet<Card>[]) this.playerHands.clone();
             return new State(newCurrentPlayer, this.playerTricks.clone(), newTableCards, newPlayerHands, newBids);
         }
         throw new IllegalArgumentException("Cannot bid");
@@ -192,7 +193,7 @@ public class State {
         return tableCards;
     }
 
-    public ArrayList<Card>[] getPlayerHands() {
+    public HashSet<Card>[] getPlayerHands() {
         return playerHands;
     }
     

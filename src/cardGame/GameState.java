@@ -1,12 +1,13 @@
 package cardGame;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface GameState {
 
     public List<Card> getTableCards();
 
-    public boolean cardLegallyPlayable(Card card, List<Card> hand);
+    public boolean cardLegallyPlayable(Card card, Collection<Card> hand);
 
     public void playCard(Card card);
 
