@@ -1,1 +1,1 @@
-The aim of this project is to explore whether a computer can play the card game Wizard(http://en.wikipedia.org/wiki/Wizard_%28card_game%29).
+The aim of this project is to explore whether a computer can play the card game [Wizard](http://en.wikipedia.org/wiki/Wizard_%28card_game%29).
