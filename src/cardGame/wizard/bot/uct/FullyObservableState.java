@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 
-public class State {
+public class FullyObservableState {
 
     private static int players;
     private static int round;
@@ -25,7 +25,7 @@ public class State {
     private ArrayList<Card> tableCards;
     private HashSet<Card>[] playerHands;
 
-    public State(int currentPlayer, int currentTrick, int[] playerTricks, ArrayList<Card> tableCards, HashSet<Card>[] handsByPlayer, int[] bids) {
+    public FullyObservableState(int currentPlayer, int currentTrick, int[] playerTricks, ArrayList<Card> tableCards, HashSet<Card>[] handsByPlayer, int[] bids) {
         this.currentPlayer = currentPlayer;
         this.currentTrick = currentTrick;
         this.playerTricks = playerTricks;
@@ -34,7 +34,7 @@ public class State {
         this.bids = bids;
     }
     
-    public State (WizardState state) {
+    public FullyObservableState (WizardState state) {
         currentPlayer = state.getCurrentPlayer();
         currentTrick = 1;
         playerTricks = new int[state.getNumberOfPlayers()];
@@ -48,7 +48,7 @@ public class State {
         
     }
     
-    public State makeMove(Move move) {
+    public FullyObservableState makeMove(Move move) {
         if (move.isCard()) {
             return makeMove(move.getCard());
         } else {
@@ -56,14 +56,14 @@ public class State {
         }
     }
     
-    public State makeRandomMove() {
+    public FullyObservableState makeRandomMove() {
         ArrayList<Move> playable = getPossibleMoves();
         Random rand = new Random();
         Move playCard = playable.get(rand.nextInt(playable.size()));
         return makeMove(playCard);
     }
 
-    private State makeMove(Card card) {
+    private FullyObservableState makeMove(Card card) {
         HashSet<Card> hand = playerHands[currentPlayer];
         HashSet<Card>[] newPlayerHands = playerHands.clone();
         HashSet<Card> newHand = (HashSet<Card>) hand.clone();
@@ -91,17 +91,17 @@ public class State {
         } else {
             throw new IllegalArgumentException("Illegal card played!");
         }
-        return new State(newCurrentPlayer, newCurrentTrick, newPlayerTricks, newTableCards, newPlayerHands, this.bids);
+        return new FullyObservableState(newCurrentPlayer, newCurrentTrick, newPlayerTricks, newTableCards, newPlayerHands, this.bids);
     }
 
-    private State makeMove(int bid) {
+    private FullyObservableState makeMove(int bid) {
         if (bids[currentPlayer] == -1) {
             int[] newBids = bids.clone();
             newBids[currentPlayer] = bid;
             int newCurrentPlayer = (currentPlayer + 1) % players;
             ArrayList<Card> newTableCards = (ArrayList<Card>) this.tableCards.clone();
             HashSet<Card>[] newPlayerHands = (HashSet<Card>[]) this.playerHands.clone();
-            return new State(newCurrentPlayer, currentTrick, this.playerTricks.clone(), newTableCards, newPlayerHands, newBids);
+            return new FullyObservableState(newCurrentPlayer, currentTrick, this.playerTricks.clone(), newTableCards, newPlayerHands, newBids);
         }
         throw new IllegalArgumentException("Cannot bid");
     }
@@ -109,12 +109,14 @@ public class State {
     public ArrayList<Move> getPossibleMoves() {
         ArrayList<Move> moves = new ArrayList();
         if (bids[currentPlayer] == -1) {
+            // player has to bid
             for (int i=0; i<=round; i++) {
                 if (! (unevenBids && currentPlayer == roundStarter && getTotalBids() +i == round)) {
                     moves.add(new Move(i));
                 }
             }
         } else {
+            // player has to play a card
             return getPlayableCards();
         }
         return moves;
@@ -130,7 +132,7 @@ public class State {
         return playableCards;
     }
     
-    public boolean isFinalState() {
+    public boolean isFinal() {
         for (int i = 0; i < playerHands.length; i++) {
             if (!playerHands[i].isEmpty()) {
                 return false;
@@ -140,10 +142,10 @@ public class State {
     }
     
     public double[] evaluate(){
-        if (isFinalState()) {
+        if (isFinal()) {
         double[] reward = new double[players];
         for (int i=0; i<players; i++) {
-            reward[i] = WizardGame.calculateScore(playerTricks[i], bids[i])/(State.getRound()*10.);
+            reward[i] = WizardGame.calculateScore(playerTricks[i], bids[i])/(FullyObservableState.getRound()*10.);
         }         
         return reward; }
         throw new UnsupportedOperationException("Cannot evaluate non terminal state!");

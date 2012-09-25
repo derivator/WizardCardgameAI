@@ -4,7 +4,7 @@ import cardGame.Card;
 import cardGame.Player;
 import cardGame.GameState;
 import cardGame.wizard.bot.uct.UCT;
-import cardGame.wizard.bot.uct.State;
+import cardGame.wizard.bot.uct.FullyObservableState;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;

@@ -1,8 +1,6 @@
 package cardGame.wizard.bot.uct;
 
-import cardGame.Card;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -12,7 +10,7 @@ import java.util.Random;
  */
 public class Node {
 
-    private State state;
+    private FullyObservableState state;
     private Move move; // move that led to this state/node;
     private Node Parent;
     List<Node> children;
@@ -20,7 +18,7 @@ public class Node {
     private int visits = 0;
     private double[] rewards;
 
-    public Node(State state, Node Parent, Move move) {
+    public Node(FullyObservableState state, Node Parent, Move move) {
         this.state = state;
         this.Parent = Parent;
         this.move = move;
@@ -34,7 +32,7 @@ public class Node {
         if (children == null) {
             children = new ArrayList<>(5);
         }
-        State newState = state.makeMove(move);
+        FullyObservableState newState = state.makeMove(move);
         Node newNode = new Node(newState, this, move);
         children.add(newNode); 
         return newNode;
@@ -67,7 +65,7 @@ public class Node {
         return Parent;
     }
 
-    public State getState() {
+    public FullyObservableState getState() {
         return state;
     }
 
@@ -97,7 +95,7 @@ public class Node {
     }
     public void addRewards(double[] r) {
         if (rewards==null) {
-            rewards = new double[State.getPlayers()];
+            rewards = new double[FullyObservableState.getPlayers()];
         }
         for (int i=0; i<rewards.length; i++) {
             rewards[i] += r[i];

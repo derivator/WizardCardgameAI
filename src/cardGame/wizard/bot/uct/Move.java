@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Move {
     
-    Card card;
-    int bid;
+    private final Card card;
+    private final int bid;
 
     public Move(Card card) {
         this.card = card;

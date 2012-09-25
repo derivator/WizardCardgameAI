@@ -4,7 +4,7 @@ import cardGame.Card;
 import cardGame.GameState;
 import cardGame.Player;
 import cardGame.wizard.*;
-import cardGame.wizard.bot.uct.State;
+import cardGame.wizard.bot.uct.FullyObservableState;
 import cardGame.wizard.bot.uct.UCT;
 import java.util.List;
 import java.util.Random;
@@ -33,14 +33,14 @@ public class UCTBot implements WizardController {
 
     @Override
     public void move() {
-        State initialState = new State(gameState);
+        FullyObservableState initialState = new FullyObservableState(gameState);
         gameState.playCard(uct.uctSearch(initialState).getCard());
 
     }
 
     @Override
     public void bid() {
-        State initialState = new State(gameState);
+        FullyObservableState initialState = new FullyObservableState(gameState);
         gameState.doBid(uct.uctSearch(initialState).getBid());
     }
 

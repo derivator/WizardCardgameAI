@@ -2,8 +2,8 @@ package cardGame;
 
 public class Card implements Comparable<Card>, Cloneable {
 
-    protected int suit;
-    protected int value;
+    protected final int suit;
+    protected final int value;
     protected int owner;
 
     protected Card() {
@@ -46,16 +46,8 @@ public class Card implements Comparable<Card>, Cloneable {
         return suit;
     }
 
-    public void setSuit(int suit) {
-        this.suit = suit;
-    }
-
     public int getValue() {
         return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 
     public int getOwner() {

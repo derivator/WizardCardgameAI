@@ -14,7 +14,7 @@ public class UCT {
         this.useHeuristics = useHeuristics;
     }
     
-    public Move uctSearch(State initialState) {
+    public Move uctSearch(FullyObservableState initialState) {
         Node root = new Node(initialState, null, null);
         
         while ((root.getVisits()) < 10000) {
@@ -32,8 +32,8 @@ public class UCT {
     
     private Node treePolicy(Node node, double exploitationParameter) {
         Node next = node;
-        State state = next.getState();
-        while (!state.isFinalState()) {
+        FullyObservableState state = next.getState();
+        while (!state.isFinal()) {
             if (next.getChildren() == null || next.getChildren().size() < state.getPossibleMoves().size()) {
                 // node not fully expanded
                 return next.randomExpand();  
@@ -46,9 +46,9 @@ public class UCT {
         return next;
     }
     
-    private double[] simulation(State state) {
-        State s = state;
-        while (!s.isFinalState()) {
+    private double[] simulation(FullyObservableState state) {
+        FullyObservableState s = state;
+        while (!s.isFinal()) {
             if (useHeuristics) {
                 //TODO add heuristic to simulation
                 int tricksNeeded = s.getBids()[s.getCurrentPlayer()]- s.getPlayerTricks()[s.getCurrentPlayer()];
@@ -101,8 +101,8 @@ public class UCT {
 
     private static double heuricsticValue(Node node) {
         double value = 0;
-        State state = node.getState();
-        int roundsLeft = State.getRound()-state.getCurrentTrick()+1;
+        FullyObservableState state = node.getState();
+        int roundsLeft = FullyObservableState.getRound()-state.getCurrentTrick()+1;
         int minimumOverBid = state.getBids()[state.getCurrentPlayer()]-roundsLeft;
         if (minimumOverBid >0) {
             value -= minimumOverBid;
