@@ -48,7 +48,7 @@ public class Move {
             return false;
         }
         final Move other = (Move) obj;
-        if (!Objects.equals(this.card, other.card)) {
+        if (!Objects.equals(this.card,other.card)) {
             return false;
         }
         if (this.bid != other.bid) {

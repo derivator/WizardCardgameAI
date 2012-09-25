@@ -5,8 +5,6 @@ import cardGame.Player;
 import cardGame.GameState;
 import cardGame.wizard.bot.uct.UCT;
 import cardGame.wizard.bot.uct.State;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +13,7 @@ import java.util.Set;
 
 public class WizardBot implements WizardController {
 	private final String name;
-	protected Set<Card> hand; 
+	protected List<Card> hand; 
 	protected WizardState gameState;
 	private int myBid=0;
 	WizardBot(){
@@ -35,13 +33,13 @@ public class WizardBot implements WizardController {
 	@Override
 	public void move() {
 		boolean overBid = gameState.getTotalBids()>=gameState.getRound();
-                List<Card> handList = new ArrayList<>(hand);
-		Collections.sort(handList, new WizardComparator(gameState.getTrumpSuit()));
+		
+		Collections.sort(hand, new WizardComparator(gameState.getTrumpSuit()));
 		if(myBid==gameState.getTricks(gameState.getCurrentPlayer()) || !overBid && gameState.getTricks(gameState.getCurrentPlayer())>myBid)
-				Collections.reverse(handList);
-		for(Card card : handList)
+				Collections.reverse(hand);
+		for(Card card : hand)
 		{
-			if(gameState.cardLegallyPlayable(card, handList))
+			if(gameState.cardLegallyPlayable(card, hand))
 			{
 				//gameState.getTableCards().
 				gameState.playCard(card);				
@@ -73,13 +71,6 @@ public class WizardBot implements WizardController {
 		myBid=bid;
 		gameState.doBid(bid);	
 	}
-
-	@Override
-	public void notifyHand(Set<Card> hand) {
-		this.hand=hand;
-		
-	}
-
 	@Override
 	public void assignGameState(GameState state) {
 		gameState = (WizardState) state;
@@ -94,6 +85,11 @@ public class WizardBot implements WizardController {
     @Override
     public void notifyTrickCompleted(List<Card> trick, Player player) {
         //TODO add code
+    }
+
+    @Override
+    public void notifyHand(Set<Card> hand) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

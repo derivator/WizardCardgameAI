@@ -13,19 +13,17 @@ import java.util.Set;
 public class UCTBot implements WizardController {
 
     private final String name;
-    protected Set<Card>[] hands;
-    protected Set<Card> hand;
-    protected WizardState gameState;
-    private double exploitationParameter;
+    private WizardState gameState;
+    private UCT uct;
 
     public UCTBot() {
         Random rand = new Random();
         name = "Bot #" + rand.nextInt(500);
     }
 
-    public UCTBot(String name, double exploitationParameter) {
+    public UCTBot(String name, double exploitationParameter, boolean useHeuristics) {
         this.name = name;
-        this.exploitationParameter =  exploitationParameter;
+        uct = new UCT(exploitationParameter, useHeuristics);
     }
 
     @Override
@@ -36,19 +34,18 @@ public class UCTBot implements WizardController {
     @Override
     public void move() {
         State initialState = new State(gameState);
-        gameState.playCard(UCT.uctSearch(initialState, exploitationParameter).getCard());
+        gameState.playCard(uct.uctSearch(initialState).getCard());
 
     }
 
     @Override
     public void bid() {
         State initialState = new State(gameState);
-        gameState.doBid(UCT.uctSearch(initialState, exploitationParameter).getBid());
+        gameState.doBid(uct.uctSearch(initialState).getBid());
     }
 
     @Override
     public void notifyHand(Set<Card> hand) {
-        this.hand = hand;
 
     }
 

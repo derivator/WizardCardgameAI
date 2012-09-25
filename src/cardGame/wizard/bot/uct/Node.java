@@ -18,7 +18,7 @@ public class Node {
     List<Node> children;
     // for UCT:
     private int visits = 0;
-    private int[] rewards;
+    private double[] rewards;
 
     public Node(State state, Node Parent, Move move) {
         this.state = state;
@@ -76,7 +76,7 @@ public class Node {
     }
     
 
-    public int getReward(int player) {
+    public double getReward(int player) {
         return rewards[player];
     }
 
@@ -95,9 +95,9 @@ public class Node {
     public void incrementVisits() {
         visits++;
     }
-    public void addRewards(int[] r) {
+    public void addRewards(double[] r) {
         if (rewards==null) {
-            rewards = new int[State.getPlayers()];
+            rewards = new double[State.getPlayers()];
         }
         for (int i=0; i<rewards.length; i++) {
             rewards[i] += r[i];

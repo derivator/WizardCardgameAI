@@ -1,5 +1,6 @@
 package cardGame.wizard;
 
+import cardGame.wizard.bot.DumbBot;
 import cardGame.Card;
 import cardGame.Game;
 import cardGame.Player;
@@ -334,20 +335,14 @@ public class WizardGame extends Game implements WizardState {
     @SuppressWarnings("unused")
     public static void main(String[] args) {
         WizardGame game = new WizardGame();
-        game.addPlayer(new UCTBot("Burt",76));
-        game.addPlayer(new UCTBot("Clide",76));
+        game.addPlayer(new UCTBot("Burt",0.5, true));
+        game.addPlayer(new UCTBot("Clide",0.5, false));
       //  game.addPlayer(new WizardBot("Charles Darwin"));
-        game.addPlayer(new UCTBot("MC Fallhin",76));
-
-        if (false) {
-            game.addPlayer(new WizardBot());
-            game.addPlayer(new WizardBot());
-
-        }
-    //    while (game.getWizardPlayer(3).getScore()>=0) {
+        game.addPlayer(new UCTBot("MC Fallhin",0.5, false));
+        
         for (int i = 0; i < 1; i++) {
-            game.startGame(3);
-            while (game.round<4) {           
+            game.startGame(5);
+            while (game.round<6) {           
                 //wait for network/user input here?
                 game.advance();
             }

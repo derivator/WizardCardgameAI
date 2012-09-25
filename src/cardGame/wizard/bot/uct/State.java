@@ -20,12 +20,14 @@ public class State {
     
     private int[] bids;
     private int currentPlayer;
+    private int currentTrick;
     private int[] playerTricks;
     private ArrayList<Card> tableCards;
     private HashSet<Card>[] playerHands;
 
-    public State(int currentPlayer, int[] playerTricks, ArrayList<Card> tableCards, HashSet<Card>[] handsByPlayer, int[] bids) {
+    public State(int currentPlayer, int currentTrick, int[] playerTricks, ArrayList<Card> tableCards, HashSet<Card>[] handsByPlayer, int[] bids) {
         this.currentPlayer = currentPlayer;
+        this.currentTrick = currentTrick;
         this.playerTricks = playerTricks;
         this.tableCards = tableCards;
         this.playerHands = handsByPlayer;
@@ -34,6 +36,7 @@ public class State {
     
     public State (WizardState state) {
         currentPlayer = state.getCurrentPlayer();
+        currentTrick = 1;
         playerTricks = new int[state.getNumberOfPlayers()];
         tableCards = (ArrayList<Card>) state.getTableCards();
         playerHands = state.getHands();
@@ -52,6 +55,7 @@ public class State {
             return makeMove(move.getBid());
         }
     }
+    
     public State makeRandomMove() {
         ArrayList<Move> playable = getPossibleMoves();
         Random rand = new Random();
@@ -65,6 +69,7 @@ public class State {
         HashSet<Card> newHand = (HashSet<Card>) hand.clone();
         ArrayList<Card> newTableCards = null;
         int newCurrentPlayer = currentPlayer;
+        int newCurrentTrick = currentTrick;
         int[] newPlayerTricks = playerTricks.clone();
 
         if (WizardGame.cardLegallyPlayable(tableCards, card, hand)) {
@@ -80,12 +85,13 @@ public class State {
                 int trickWinner = highestCard.getOwner();
                 newPlayerTricks[trickWinner]++;
                 newCurrentPlayer = trickWinner;
+                newCurrentTrick++;
                 newTableCards = new ArrayList<>(players);
             }
         } else {
             throw new IllegalArgumentException("Illegal card played!");
         }
-        return new State(newCurrentPlayer, newPlayerTricks, newTableCards, newPlayerHands, this.bids);
+        return new State(newCurrentPlayer, newCurrentTrick, newPlayerTricks, newTableCards, newPlayerHands, this.bids);
     }
 
     private State makeMove(int bid) {
@@ -95,7 +101,7 @@ public class State {
             int newCurrentPlayer = (currentPlayer + 1) % players;
             ArrayList<Card> newTableCards = (ArrayList<Card>) this.tableCards.clone();
             HashSet<Card>[] newPlayerHands = (HashSet<Card>[]) this.playerHands.clone();
-            return new State(newCurrentPlayer, this.playerTricks.clone(), newTableCards, newPlayerHands, newBids);
+            return new State(newCurrentPlayer, currentTrick, this.playerTricks.clone(), newTableCards, newPlayerHands, newBids);
         }
         throw new IllegalArgumentException("Cannot bid");
     }
@@ -125,7 +131,6 @@ public class State {
     }
     
     public boolean isFinalState() {
-
         for (int i = 0; i < playerHands.length; i++) {
             if (!playerHands[i].isEmpty()) {
                 return false;
@@ -134,11 +139,11 @@ public class State {
         return true;
     }
     
-    public int[] evaluate(){
+    public double[] evaluate(){
         if (isFinalState()) {
-        int[] reward = new int[players];
+        double[] reward = new double[players];
         for (int i=0; i<players; i++) {
-            reward[i] = WizardGame.calculateScore(playerTricks[i], bids[i]);
+            reward[i] = WizardGame.calculateScore(playerTricks[i], bids[i])/(State.getRound()*10.);
         }         
         return reward; }
         throw new UnsupportedOperationException("Cannot evaluate non terminal state!");
@@ -185,6 +190,10 @@ public class State {
         return currentPlayer;
     }
 
+    public int getCurrentTrick() {
+        return currentTrick;
+    }
+    
     public int[] getPlayerTricks() {
         return playerTricks;
     }
