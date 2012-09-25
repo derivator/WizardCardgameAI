@@ -10,6 +10,7 @@ public class WizardCard extends Card {
         super(suit, value);
     }
 
+    @Override
     public String toString() {
         String s = "" + suits.charAt(suit) + "-";
 
