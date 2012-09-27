@@ -38,7 +38,7 @@ public class FullyObservableState {
         currentPlayer = state.getCurrentPlayer();
         currentTrick = 1;
         playerTricks = new int[state.getNumberOfPlayers()];
-        tableCards = (ArrayList<Card>) state.getTableCards();
+        tableCards = new ArrayList(state.getTableCards());
         playerHands = state.getHands();
         initialize(state);
         bids = new int[players];
@@ -66,7 +66,7 @@ public class FullyObservableState {
     private FullyObservableState makeMove(Card card) {
         HashSet<Card> hand = playerHands[currentPlayer];
         HashSet<Card>[] newPlayerHands = playerHands.clone();
-        HashSet<Card> newHand = (HashSet<Card>) hand.clone();
+        HashSet<Card> newHand = new HashSet<>(hand);
         ArrayList<Card> newTableCards = null;
         int newCurrentPlayer = currentPlayer;
         int newCurrentTrick = currentTrick;
@@ -75,8 +75,7 @@ public class FullyObservableState {
         if (WizardGame.cardLegallyPlayable(tableCards, card, hand)) {
             newHand.remove(card);
             newPlayerHands[currentPlayer] = newHand;
-            newTableCards = (ArrayList<Card>) tableCards.clone();
-            card.setOwner(currentPlayer);
+            newTableCards = new ArrayList<>(tableCards);
             newTableCards.add(card);
             newCurrentPlayer = (currentPlayer + 1) % players;
 

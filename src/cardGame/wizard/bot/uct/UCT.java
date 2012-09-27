@@ -1,23 +1,27 @@
 package cardGame.wizard.bot.uct;
 
+import cardGame.wizard.bot.WizardAI;
 import java.util.Iterator;
 import java.util.Random;
 
 
-public class UCT {
+public class UCT extends WizardAI{
     
+    private int visits;
     private double exploitationParameter;
     private boolean useHeuristics;
 
-    public UCT(double exploitationParameter, boolean useHeuristics) {
+    public UCT(int visits, double exploitationParameter, boolean useHeuristics) {
+        this.visits = visits;
         this.exploitationParameter = exploitationParameter;
         this.useHeuristics = useHeuristics;
     }
     
-    public Move uctSearch(FullyObservableState initialState) {
+    @Override
+    public Move makeDecision(FullyObservableState initialState) {
         Node root = new Node(initialState, null, null);
-        
-        while ((root.getVisits()) < 10000) {
+        long time = System.nanoTime();
+        while ((root.getVisits()) < visits) {
            Node selected = treePolicy(root, exploitationParameter);
            double[] rewards = simulation(selected.getState());
            backup(selected, rewards);        
@@ -26,6 +30,8 @@ public class UCT {
         for (Node child : root.getChildren()) {
             System.out.println("Move "+child.getMove()+  " - Reward: " + child.getReward(root.getState().getCurrentPlayer())+", visits: " +child.getVisits());        
         }
+        long delta = System.nanoTime()-time;
+        System.out.println(delta/1000000);
         return chosen;
         
     }

@@ -42,14 +42,7 @@ public abstract class Game implements GameState {
     public abstract void addPlayer(PlayerController pc);
 
     public void startGame() {
-        tableCards.trimToSize();
-        players.trimToSize();
-        inProgress = true;
-        currentPlayer = 0;
-        roundStarter = 0;
-        round = 0;
-        Collections.shuffle(players);
-        startRound();
+        startGame(1);
     }
 
     public abstract void advance();
@@ -97,30 +90,7 @@ public abstract class Game implements GameState {
 
     @Override
     public List<Card> getTableCards() {
-        return (List) Game.cloneCards(tableCards);
+        return Collections.unmodifiableList(tableCards);
     }
-
-    public static ArrayList<Card> cloneCards(Collection<Card> list) {
-        if (list == null) {
-            return null;
-        }
-        
-        ArrayList<Card> copy = new ArrayList<>();
-        for (Card card : list) {
-            copy.add((Card) card.clone());
-        }
-        return copy;
-    }
-    public static HashSet<Card> cloneHand(HashSet<Card> hand) {
-            if (hand == null) {
-            return null;
-        }
-        
-        HashSet<Card> copy = new HashSet<>();
-        for (Card card : hand) {
-            copy.add((Card) card.clone());
-        }
-        return copy;
-    }    
     
 }

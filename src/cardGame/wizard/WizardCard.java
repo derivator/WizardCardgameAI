@@ -9,6 +9,9 @@ public class WizardCard extends Card {
     public WizardCard(int suit, int value) {
         super(suit, value);
     }
+    public WizardCard(Card card, int owner) {
+        super(card, owner);
+    }
 
     @Override
     public String toString() {

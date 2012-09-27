@@ -4,11 +4,12 @@ public class Card implements Comparable<Card>, Cloneable {
 
     protected final int suit;
     protected final int value;
-    protected int owner;
+    protected final int owner;
 
     protected Card() {
         suit = -128;
         value = -128;
+        owner = 0;
     }
 
     protected Card(int suit, int value) {
@@ -17,6 +18,12 @@ public class Card implements Comparable<Card>, Cloneable {
         owner = 0;
     }
 
+    protected Card(Card unowned, int owner) {
+        this.suit = unowned.suit;
+        this.value = unowned.value;
+        this.owner = owner;
+    }
+    
     public Object clone() {
         try {
             return super.clone();
@@ -52,9 +59,5 @@ public class Card implements Comparable<Card>, Cloneable {
 
     public int getOwner() {
         return owner;
-    }
-
-    public void setOwner(int owner) {
-        this.owner = owner;
     }
 }

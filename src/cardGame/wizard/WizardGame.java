@@ -4,7 +4,7 @@ import cardGame.Card;
 import cardGame.Game;
 import cardGame.Player;
 import cardGame.PlayerController;
-import cardGame.wizard.bot.UCTBot;
+import cardGame.wizard.bot.WizardBot;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,14 +73,16 @@ public class WizardGame extends Game implements WizardState {
     @Override
     protected void dealCards(int amount) {
         Iterator<Card> it = deck.iterator();
+        int playerNr = 0;
         for (Player p : players) {
             HashSet<Card> dealtHand = new HashSet<>(round);
             for (int i = 0; i < amount; i++) {
-                dealtHand.add(it.next());
+                dealtHand.add(new WizardCard(it.next(), playerNr));
                 it.remove();
             }
             p.setHand(dealtHand);
             System.out.println(p.getController().getName()+": "+p.getHand());
+            playerNr++;
         }
 
         if (it.hasNext()) {
@@ -174,18 +176,15 @@ public class WizardGame extends Game implements WizardState {
             nextPlayer();
             if (currentPlayer == trickStarter) {
                 System.out.println(tableCards.toString());
-                List<Card> trick = (List) Game.cloneCards(tableCards);
                 Card highestCard = Collections.min(tableCards, new WizardComparator(getTrumpSuit(), getFollowSuit(tableCards)));
                 trickStarter = highestCard.getOwner();
                 currentPlayer = highestCard.getOwner();          
                 getWizardPlayer(currentPlayer).addTrick();
                 System.out.println("Player " + getWizardPlayer(currentPlayer).getController().getName()+ " wins the trick with "+highestCard);
                 for (Player p : players) {
-                    ((WizardPlayer)p).notifyTrickCompleted(trick, getWizardPlayer(currentPlayer));
+                    ((WizardPlayer)p).notifyTrickCompleted(Collections.unmodifiableList(tableCards), getWizardPlayer(currentPlayer));
                 }
                 nextTrick();
-
-
             } else {
                 waitingForCard = true;
             }
@@ -236,7 +235,6 @@ public class WizardGame extends Game implements WizardState {
     public void playCard(Card c) {
         HashSet<Card> hand = getWizardPlayer(currentPlayer).getHand();
         if (cardLegallyPlayable(c, hand)) {
-            c.setOwner(currentPlayer);
             tableCards.add(c);
             hand.remove(c);
             getWizardPlayer(currentPlayer).setHand(hand);
@@ -322,30 +320,11 @@ public class WizardGame extends Game implements WizardState {
         return true;
     }
     
-    private void printScore() {
+    public void printScore() {
         for (Player player : players) {
             WizardPlayer p = (WizardPlayer) player;
             System.out.println(p.getController().getName() + ": " + p.getScore());
         }
         System.out.println("Over/Under-Bid: " + overUnderBid);
     }
-
-    @SuppressWarnings("unused")
-    public static void main(String[] args) {
-        WizardGame game = new WizardGame();
-        game.addPlayer(new UCTBot("Burt",0.5, true));
-        game.addPlayer(new UCTBot("Clide",0.5, false));
-      //  game.addPlayer(new WizardBot("Charles Darwin"));
-        game.addPlayer(new UCTBot("MC Fallhin",0.5, false));
-        
-        for (int i = 0; i < 1; i++) {
-            game.startGame(5);
-            while (game.round<6) {           
-                //wait for network/user input here?
-                game.advance();
-            }
-        }
-        game.printScore();
-    }
-   
 }

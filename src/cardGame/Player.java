@@ -1,8 +1,8 @@
 package cardGame;
 
-import java.util.Iterator;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public abstract class Player {
@@ -21,7 +21,7 @@ public abstract class Player {
     public void setHand(HashSet<Card> hand) {
         this.hand = hand;
         if (controller != null) {
-            controller.notifyHand(getHandClone());
+            controller.notifyHand(getUnmodifiableHand());
         }
     }
 
@@ -29,8 +29,8 @@ public abstract class Player {
         return  hand;
     }
 
-    public HashSet<Card> getHandClone() {
-        return  (HashSet) Game.cloneHand(hand);
+    public Set<Card> getUnmodifiableHand() {
+        return  Collections.unmodifiableSet(hand);
     }
 
     public PlayerController getController() {
@@ -44,8 +44,6 @@ public abstract class Player {
     public void setScore(int score) {
         this.score = score;
     }
-    
-    
     
     @Override
     public String toString() {

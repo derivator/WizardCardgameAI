@@ -10,20 +10,20 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class UCTBot implements WizardController {
+public class WizardBot implements WizardController {
 
     private final String name;
     private WizardState gameState;
-    private UCT uct;
+    private WizardAI ai;
 
-    public UCTBot() {
+    public WizardBot() {
         Random rand = new Random();
         name = "Bot #" + rand.nextInt(500);
     }
 
-    public UCTBot(String name, double exploitationParameter, boolean useHeuristics) {
+    public WizardBot(String name, WizardAI ai) {
         this.name = name;
-        uct = new UCT(exploitationParameter, useHeuristics);
+        this.ai = ai;
     }
 
     @Override
@@ -34,14 +34,14 @@ public class UCTBot implements WizardController {
     @Override
     public void move() {
         FullyObservableState initialState = new FullyObservableState(gameState);
-        gameState.playCard(uct.uctSearch(initialState).getCard());
+        gameState.playCard(ai.makeDecision(initialState).getCard());
 
     }
 
     @Override
     public void bid() {
         FullyObservableState initialState = new FullyObservableState(gameState);
-        gameState.doBid(uct.uctSearch(initialState).getBid());
+        gameState.doBid(ai.makeDecision(initialState).getBid());
     }
 
     @Override
